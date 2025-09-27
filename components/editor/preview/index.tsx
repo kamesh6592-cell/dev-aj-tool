@@ -323,6 +323,25 @@ export const Preview = forwardRef<LivePreviewRef, { isNew: boolean }>(
               sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
               allow="accelerometer; ambient-light-sensor; autoplay; battery; camera; clipboard-read; clipboard-write; display-capture; document-domain; encrypted-media; fullscreen; geolocation; gyroscope; layout-animations; legacy-image-formats; magnetometer; microphone; midi; oversized-images; payment; picture-in-picture; publickey-credentials-get; serial; sync-xhr; usb; vr ; wake-lock; xr-spatial-tracking"
             />
+            <div
+              className={classNames(
+                "w-full h-full flex items-center justify-center absolute left-0 top-0 bg-black/40 backdrop-blur-lg transition-all duration-200",
+                {
+                  "opacity-0 pointer-events-none": !globalAiLoading,
+                }
+              )}
+            >
+              <div className="py-10 w-full relative z-1 max-w-3xl mx-auto text-center">
+                <AiLoading
+                  text={
+                    isLoadingProject ? "Fetching your project..." : undefined
+                  }
+                  className="flex-col"
+                />
+                <AnimatedBlobs />
+                <AnimatedBlobs />
+              </div>
+            </div>
             <HistoryNotification
               isVisible={!!currentCommit}
               isPromotingVersion={isPromotingVersion}

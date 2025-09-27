@@ -167,11 +167,13 @@ export const AskAi = ({
           </div>
         )}
         <div className="w-full relative flex items-center justify-between">
-          {(isAiWorking || isUploading || isThinking) && (
+          {(isAiWorking || isUploading || isThinking || isLoadingProject) && (
             <div className="absolute bg-neutral-800 top-0 left-4 w-[calc(100%-30px)] h-full z-1 flex items-start pt-3.5 justify-between max-lg:text-sm">
               <AiLoading
                 text={
-                  isUploading
+                  isLoadingProject
+                    ? "Fetching your project..."
+                    : isUploading
                     ? "Uploading images..."
                     : isAiWorking && !isSameHtml
                     ? "DeepSite is working..."
