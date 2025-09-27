@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { InferenceClient } from "@huggingface/inference";
 
-import { MODELS, PROVIDERS } from "@/lib/providers";
+import { MODELS } from "@/lib/providers";
 import {
   DIVIDER,
   FOLLOW_UP_SYSTEM_PROMPT,
@@ -125,7 +125,7 @@ export async function POST(request: NextRequest) {
         const chatCompletion = client.chatCompletionStream(
           {
             model: selectedModel.value,
-            provider: selectedProvider,
+            provider: selectedProvider.provider,
             messages: [
               {
                 role: "system",
@@ -136,7 +136,7 @@ export async function POST(request: NextRequest) {
                 content: `${rewrittenPrompt}${redesignMarkdown ? `\n\nHere is my current design as a markdown:\n\n${redesignMarkdown}\n\nNow, please create a new design based on this markdown. Use the images in the markdown.` : ""} : ""}`
               },
             ],
-            max_tokens: selectedProvider.max_tokens,
+            max_tokens: 65_536,
           },
           billTo ? { billTo } : {}
         );

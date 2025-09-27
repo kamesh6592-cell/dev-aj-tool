@@ -8,13 +8,13 @@ export const getBestProvider = async (model: string, provider?: string) => {
       if (a.status !== "live" && b.status === "live") return 1
       return a?.pricing?.output - b?.pricing?.output + a?.pricing?.input - b?.pricing?.input
     })
-    bestProvider = sortedProviders[0].provider
+    bestProvider = sortedProviders[0]
   } else {
     const providerData = data.providers.find((p: any) => p.provider === provider)
     if (providerData?.status === "live") {
       bestProvider = providerData.provider
     } else {
-      bestProvider = data.providers?.find((p: any) => p.status === "live")?.provider
+      bestProvider = data.providers?.find((p: any) => p.status === "live")
     }
   }
 
