@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
   let rewrittenPrompt = prompt;
 
   if (enhancedSettings.isActive) {
-    rewrittenPrompt = await rewritePrompt(prompt, enhancedSettings, { token, billTo }, selectedModel.value, selectedProvider);
+    rewrittenPrompt = await rewritePrompt(prompt, enhancedSettings, { token, billTo }, selectedModel.value, selectedProvider.provider);
   }
 
   try {

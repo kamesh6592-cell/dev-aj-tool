@@ -93,11 +93,18 @@ export const useAi = (onScrollToBottom?: () => void, livePreviewRef?: React.RefO
 
   const { data: model } = useQuery({
     queryKey: ["ai.model"],
-    queryFn: async () => storageModel ?? MODELS[0].value,
+    queryFn: async () => {
+      // check if the model exist in the MODELS array
+      const selectedModel = MODELS.find(m => m.value === storageModel || m.label === storageModel);
+      if (selectedModel) {
+        return selectedModel.value;
+      }
+      return MODELS[0].value;
+    },
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
-    initialData: storageModel ?? MODELS[0].value
+    initialData: undefined,
   });
   const setModel = (newModel: string) => {
     setStorageModel(newModel);
@@ -220,16 +227,16 @@ export const useAi = (onScrollToBottom?: () => void, livePreviewRef?: React.RefO
             }
           }
           
-          if (selectedModel?.isThinker) {
-            const thinkMatch = contentResponse.match(/<think>[\s\S]*/)?.[0];
-            if (thinkMatch && !contentResponse?.includes("</think>")) {
-              handleThink?.(thinkMatch.replace("<think>", "").trim());
-            }
-          }
+          // if (selectedModel?.isThinker) {
+          //   const thinkMatch = contentResponse.match(/<think>[\s\S]*/)?.[0];
+          //   if (thinkMatch && !contentResponse?.includes("</think>")) {
+          //     handleThink?.(thinkMatch.replace("<think>", "").trim());
+          //   }
+          // }
 
-          if (contentResponse.includes("</think>")) {
-            onFinishThink?.();
-          }
+          // if (contentResponse.includes("</think>")) {
+          //   onFinishThink?.();
+          // }
 
           formatPages(contentResponse);
           
