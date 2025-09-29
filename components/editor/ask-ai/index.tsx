@@ -33,6 +33,7 @@ export const AskAi = ({
 }) => {
   const { user, projects } = useUser();
   const { isSameHtml, isUploading, pages, isLoadingProject } = useEditor();
+  console.log("isSameHtml", isSameHtml);
   const {
     isAiWorking,
     isThinking,

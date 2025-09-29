@@ -16,6 +16,7 @@ models:
   - moonshotai/Kimi-K2-Instruct-0905
   - deepseek-ai/DeepSeek-V3.1
   - deepseek-ai/DeepSeek-V3.1-Terminus
+  - deepseek-ai/DeepSeek-V3.2-Exp
 ---
 
 # DeepSite 🐳

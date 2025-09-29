@@ -101,10 +101,10 @@ export async function POST(request: NextRequest) {
 
   const selectedProvider = await getBestProvider(selectedModel.value, provider)
 
-  let rewrittenPrompt = prompt;
+  let rewrittenPrompt = redesignMarkdown ? `Here is my current design as a markdown:\n\n${redesignMarkdown}\n\nNow, please create a new design based on this markdown. Use the images in the markdown.` : prompt;
 
   if (enhancedSettings.isActive) {
-    rewrittenPrompt = await rewritePrompt(prompt, enhancedSettings, { token, billTo }, selectedModel.value, selectedProvider.provider);
+    rewrittenPrompt = await rewritePrompt(rewrittenPrompt, enhancedSettings, { token, billTo }, selectedModel.value, selectedProvider.provider);
   }
 
   try {
@@ -133,7 +133,7 @@ IMPORTANT: Use the templates as inspiration, but do not copy them exactly.
 Try to create a unique design, based on the templates, but not exactly like them, mostly depending on the user's prompt. These are just examples, do not copy them exactly.
 ` : "");
         
-        const userPrompt = `${rewrittenPrompt}${redesignMarkdown ? `\n\nHere is my current design as a markdown:\n\n${redesignMarkdown}\n\nNow, please create a new design based on this markdown. Use the images in the markdown.` : ""} : ""}`;
+        const userPrompt = rewrittenPrompt;
         
         const estimatedInputTokens = estimateInputTokens(systemPrompt, userPrompt);
         const dynamicMaxTokens = calculateMaxTokens(selectedProvider, estimatedInputTokens, true);
