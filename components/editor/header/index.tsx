@@ -80,6 +80,20 @@ export function Header() {
           </Link>
         </div>
         <div className="flex items-center gap-2">
+          {project?.space_id && (
+            <Link
+              href={`https://huggingface.co/spaces/${project.space_id}`}
+              target="_blank"
+            >
+              <Button
+                size="xs"
+                variant="bordered"
+                className="flex items-center gap-1 justify-center border-gray-200/20 bg-gray-200/10 text-gray-200 max-lg:hidden"
+              >
+                See Live Preview
+              </Button>
+            </Link>
+          )}
           {project?.private && (
             <Tooltip>
               <TooltipTrigger>
@@ -101,7 +115,7 @@ export function Header() {
             <UserMenu className="!pl-1 !pr-3 !py-1 !h-auto" />
           ) : (
             <Button size="sm" onClick={openLoginWindow}>
-              <span className="max-lg:hidden">Start Vibe Coding</span>
+              <span className="max-lg:hidden">Log In to DeepSite</span>
               <span className="lg:hidden">Log In</span>
               <ArrowRight className="size-4" />
             </Button>
