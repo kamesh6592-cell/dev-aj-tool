@@ -135,7 +135,6 @@ Try to create a unique design, based on the templates, but not exactly like them
 ` : "");
         
         const userPrompt = rewrittenPrompt;
-        
         const estimatedInputTokens = estimateInputTokens(systemPrompt, userPrompt);
         const dynamicMaxTokens = calculateMaxTokens(selectedProvider, estimatedInputTokens, true);
         const providerConfig = getProviderSpecificConfig(selectedProvider, dynamicMaxTokens);
