@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
   let rewrittenPrompt = redesignMarkdown ? `Here is my current design as a markdown:\n\n${redesignMarkdown}\n\nNow, please create a new design based on this markdown. Use the images in the markdown.` : prompt;
 
   if (enhancedSettings.isActive) {
-    rewrittenPrompt = await rewritePrompt(rewrittenPrompt, enhancedSettings, { token, billTo }, selectedModel.value, selectedProvider.provider);
+    // rewrittenPrompt = await rewritePrompt(rewrittenPrompt, enhancedSettings, { token, billTo }, selectedModel.value, selectedProvider.provider);
   }
 
   try {
@@ -151,7 +151,9 @@ Try to create a unique design, based on the templates, but not exactly like them
               },
               {
                 role: "user",
-                content: userPrompt
+                content: userPrompt + (enhancedSettings.isActive ? `1. I want to use the following primary color: ${enhancedSettings.primaryColor} (eg: bg-${enhancedSettings.primaryColor}-500).
+2. I want to use the following secondary color: ${enhancedSettings.secondaryColor} (eg: bg-${enhancedSettings.secondaryColor}-500).
+3. I want to use the following theme: ${enhancedSettings.theme} mode.` : "")
               },
             ],
             ...providerConfig,
