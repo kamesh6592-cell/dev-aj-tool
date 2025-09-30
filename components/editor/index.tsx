@@ -51,8 +51,8 @@ export const AppEditor = ({
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
 
   useMount(() => {
-    if (isNew) {
-      setPages(pagesStorage || []);
+    if (isNew && pagesStorage) {
+      setPages(pagesStorage);
       removePagesStorage();
     }
   });

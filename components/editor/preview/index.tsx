@@ -212,7 +212,7 @@ export const Preview = forwardRef<LivePreviewRef, { isNew: boolean }>(
         className={classNames(
           "bg-neutral-900/30 w-full h-[calc(100dvh-57px)] flex flex-col items-center justify-center relative z-1 lg:border-l border-neutral-800",
           {
-            "max-lg:h-0": currentTab === "chat",
+            "max-lg:h-0 overflow-hidden": currentTab === "chat",
             "max-lg:h-full": currentTab === "preview",
           }
         )}

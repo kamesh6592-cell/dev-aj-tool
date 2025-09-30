@@ -118,7 +118,7 @@ export const LivePreview = forwardRef<LivePreviewRef, LivePreviewProps>(
         <div
           className={classNames(
             "flex flex-col animate-in fade-in duration-300",
-            isMaximized ? "w-[60dvw] h-[80dvh]" : "w-80 h-96"
+            isMaximized ? "w-[90dvw] lg:w-[60dvw] h-[80dvh]" : "w-80 h-96"
           )}
         >
           <div className="flex items-center justify-between p-3 border-b border-neutral-200">
