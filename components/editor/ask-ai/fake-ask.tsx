@@ -1,33 +1,14 @@
 import { useState } from "react";
 import { useLocalStorage } from "react-use";
-import { ArrowUp, Dice1, Dice6 } from "lucide-react";
+import { ArrowUp, Dice6 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { useLoginModal } from "@/components/contexts/login-context";
 import { PromptBuilder } from "./prompt-builder";
 import { EnhancedSettings } from "@/types";
 import { Settings } from "./settings";
 import classNames from "classnames";
-
-const prompts = [
-  "Create a landing page for a SaaS product, with a hero section, a features section, a pricing section, and a call to action section.",
-  "Create a portfolio website for a designer, with a hero section, a projects section, a about section, and a contact section.",
-  "Create a blog website for a writer, with a hero section, a blog section, a about section, and a contact section.",
-  "Create a Tic Tac Toe game, with a game board, a history section, and a score section.",
-  "Create a Weather App, with a search bar, a weather section, and a forecast section.",
-  "Create a Calculator, with a calculator section, and a history section.",
-  "Create a Todo List, with a todo list section, and a history section.",
-  "Create a Calendar, with a calendar section, and a history section.",
-  "Create a Music Player, with a music player section, and a history section.",
-  "Create a Quiz App, with a quiz section, and a history section.",
-  "Create a Pomodoro Timer, with a timer section, and a history section.",
-  "Create a Notes App, with a notes section, and a history section.",
-  "Create a Task Manager, with a task list section, and a history section.",
-  "Create a Password Generator, with a password generator section, and a history section.",
-  "Create a Currency Converter, with a currency converter section, and a history section.",
-  "Create a Dictionary, with a dictionary section, and a history section.",
-];
+import { PROMPTS_FOR_AI } from "@/lib/prompts";
 
 export const FakeAskAi = () => {
   const router = useRouter();
@@ -51,7 +32,9 @@ export const FakeAskAi = () => {
   const randomPrompt = () => {
     setRandomPromptLoading(true);
     setTimeout(() => {
-      setPrompt(prompts[Math.floor(Math.random() * prompts.length)]);
+      setPrompt(
+        PROMPTS_FOR_AI[Math.floor(Math.random() * PROMPTS_FOR_AI.length)]
+      );
       setRandomPromptLoading(false);
     }, 400);
   };

@@ -91,9 +91,9 @@ export function MyProjects() {
               Create Project
             </div>
           )}
-          {projects.map((project: ProjectType) => (
+          {projects.map((project: ProjectType, index: number) => (
             <ProjectCard
-              key={project.name}
+              key={index}
               project={project}
               onDelete={() => onDelete(project)}
             />

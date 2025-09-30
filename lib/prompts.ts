@@ -147,3 +147,22 @@ ${NEW_PAGE_START}index.html${NEW_PAGE_END}
 \`\`\`
 IMPORTANT: While creating a new page, UPDATE ALL THE OTHERS (using the UPDATE_PAGE_START and SEARCH/REPLACE format) pages to add or replace the link to the new page, otherwise the user will not be able to navigate to the new page. (Dont use onclick to navigate, only href)
 No need to explain what you did. Just return the expected result.`
+
+export const PROMPTS_FOR_AI = [
+    "Create a landing page for a SaaS product, with a hero section, a features section, a pricing section, and a call to action section.",
+    "Create a portfolio website for a designer, with a hero section, a projects section, a about section, and a contact section.",
+    "Create a blog website for a writer, with a hero section, a blog section, a about section, and a contact section.",
+    "Create a Tic Tac Toe game, with a game board, a history section, and a score section.",
+    "Create a Weather App, with a search bar, a weather section, and a forecast section.",
+    "Create a Calculator, with a calculator section, and a history section.",
+    "Create a Todo List, with a todo list section, and a history section.",
+    "Create a Calendar, with a calendar section, and a history section.",
+    "Create a Music Player, with a music player section, and a history section.",
+    "Create a Quiz App, with a quiz section, and a history section.",
+    "Create a Pomodoro Timer, with a timer section, and a history section.",
+    "Create a Notes App, with a notes section, and a history section.",
+    "Create a Task Manager, with a task list section, and a history section.",
+    "Create a Password Generator, with a password generator section, and a history section.",
+    "Create a Currency Converter, with a currency converter section, and a history section.",
+    "Create a Dictionary, with a dictionary section, and a history section.",
+  ];

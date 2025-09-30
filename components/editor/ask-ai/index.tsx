@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import classNames from "classnames";
-import { ArrowUp, ChevronDown, CircleStop } from "lucide-react";
+import { ArrowUp, ChevronDown, CircleStop, Dice6 } from "lucide-react";
 import { useLocalStorage, useUpdateEffect, useMount } from "react-use";
 import { toast } from "sonner";
 
@@ -20,6 +20,7 @@ import { useLoginModal } from "@/components/contexts/login-context";
 import { Settings } from "./settings";
 import { useProModal } from "@/components/contexts/pro-context";
 import { MAX_FREE_PROJECTS } from "@/lib/utils";
+import { PROMPTS_FOR_AI } from "@/lib/prompts";
 
 export const AskAi = ({
   project,
@@ -69,12 +70,7 @@ export const AskAi = ({
   );
   const [think, setThink] = useState("");
   const [openThink, setOpenThink] = useState(false);
-
-  const handleThink = (think: string) => {
-    setThink(think);
-    setIsThinking(true);
-    setOpenThink(true);
-  };
+  const [randomPromptLoading, setRandomPromptLoading] = useState(false);
 
   useMount(() => {
     if (promptStorage && promptStorage.trim() !== "") {
@@ -151,6 +147,16 @@ export const AskAi = ({
       refThink.current.scrollTop = refThink.current.scrollHeight;
     }
   }, [think]);
+
+  const randomPrompt = () => {
+    setRandomPromptLoading(true);
+    setTimeout(() => {
+      setPrompt(
+        PROMPTS_FOR_AI[Math.floor(Math.random() * PROMPTS_FOR_AI.length)]
+      );
+      setRandomPromptLoading(false);
+    }, 400);
+  };
 
   return (
     <div className="p-3 w-full">
@@ -261,6 +267,20 @@ export const AskAi = ({
               }
             }}
           />
+          {isNew && !isAiWorking && isSameHtml && (
+            <Button
+              size="iconXs"
+              variant="outline"
+              className="!rounded-md -translate-y-2 -translate-x-4"
+              onClick={() => randomPrompt()}
+            >
+              <Dice6
+                className={classNames("size-4", {
+                  "animate-spin animation-duration-500": randomPromptLoading,
+                })}
+              />
+            </Button>
+          )}
         </div>
         <div className="flex items-center justify-between gap-2 px-4 pb-3 mt-2">
           <div className="flex-1 flex items-center justify-start gap-1.5 flex-wrap">
@@ -276,7 +296,7 @@ export const AskAi = ({
             />
             {!isNew && <Uploader project={project} />}
             {isNew && <ReImagine onRedesign={(md) => callAi(md)} />}
-            {!isNew && <Selector />}
+            {!isNew && !isSameHtml && <Selector />}
           </div>
           <div className="flex items-center justify-end gap-2">
             <Button
