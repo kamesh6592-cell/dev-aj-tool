@@ -67,6 +67,24 @@ export function Settings({
     }
   }, [model, provider]);
 
+  const formattedModels = useMemo(() => {
+    const lists: ((typeof MODELS)[0] | { isCategory: true; name: string })[] =
+      [];
+    const keys = new Set<string>();
+    MODELS.forEach((model) => {
+      if (!keys.has(model.companyName)) {
+        lists.push({
+          isCategory: true,
+          name: model.companyName,
+          logo: model.logo,
+        });
+        keys.add(model.companyName);
+      }
+      lists.push(model);
+    });
+    return lists;
+  }, [MODELS]);
+
   return (
     <Popover open={open} onOpenChange={onClose}>
       <PopoverTrigger asChild>
@@ -115,19 +133,24 @@ export function Settings({
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Models</SelectLabel>
-                  {MODELS.map(
-                    ({
+                  {formattedModels.map((item: any) => {
+                    if ("isCategory" in item) {
+                      return (
+                        <SelectLabel
+                          key={item.name}
+                          className="flex items-center gap-1"
+                        >
+                          {item.name}
+                        </SelectLabel>
+                      );
+                    }
+                    const {
                       value,
                       label,
                       isNew = false,
                       isThinker = false,
-                    }: {
-                      value: string;
-                      label: string;
-                      isNew?: boolean;
-                      isThinker?: boolean;
-                    }) => (
+                    } = item;
+                    return (
                       <SelectItem
                         key={value}
                         value={value}
@@ -141,8 +164,8 @@ export function Settings({
                           </span>
                         )}
                       </SelectItem>
-                    )
-                  )}
+                    );
+                  })}
                 </SelectGroup>
               </SelectContent>
             </Select>
