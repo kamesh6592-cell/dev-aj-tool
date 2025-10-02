@@ -126,13 +126,7 @@ export async function POST(request: NextRequest) {
       try {
         const client = new InferenceClient(token);
         
-        // Calculate dynamic max_tokens based on provider and input size
-        const systemPrompt = INITIAL_SYSTEM_PROMPT + (enhancedSettings.isActive ? `
-Here are some examples of designs that you can inspire from: 
-${templates.map((template) => `- ${template}`).join("\n")}
-IMPORTANT: Use the templates as inspiration, but do not copy them exactly.
-Try to create a unique design, based on the templates, but not exactly like them, mostly depending on the user's prompt. These are just examples, do not copy them exactly.
-` : "");
+        const systemPrompt = INITIAL_SYSTEM_PROMPT;
         
         const userPrompt = rewrittenPrompt;
         const estimatedInputTokens = estimateInputTokens(systemPrompt, userPrompt);
