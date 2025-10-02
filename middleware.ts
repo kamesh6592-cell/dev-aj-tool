@@ -10,7 +10,7 @@ export function middleware(request: NextRequest) {
   
   // Add SEO and security headers
   // Only set X-Frame-Options for non-HF spaces domains
-  if (!request.nextUrl.host.includes('hf.space')) {
+  if (!request.nextUrl.host.includes('hf.space') && !request.nextUrl.host.includes('huggingface.co') && !request.nextUrl.host.includes('hf.co')) {
     response.headers.set('X-Frame-Options', 'SAMEORIGIN');
   }
   response.headers.set('X-Content-Type-Options', 'nosniff');
