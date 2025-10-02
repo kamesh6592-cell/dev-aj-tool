@@ -13,6 +13,7 @@ import AppContext from "@/components/contexts/app-context";
 import TanstackContext from "@/components/contexts/tanstack-query-context";
 import { LoginProvider } from "@/components/contexts/login-context";
 import { ProProvider } from "@/components/contexts/pro-context";
+import { generateSEO, generateStructuredData } from "@/lib/seo";
 
 const inter = Inter({
   variable: "--font-inter-sans",
@@ -26,31 +27,12 @@ const ptSans = PT_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "DeepSite | Build with AI ✨",
-  description:
-    "DeepSite is a web development tool that helps you build websites with AI, no code required. Let's deploy your website with DeepSite and enjoy the magic of AI.",
-  openGraph: {
+  ...generateSEO({
     title: "DeepSite | Build with AI ✨",
     description:
       "DeepSite is a web development tool that helps you build websites with AI, no code required. Let's deploy your website with DeepSite and enjoy the magic of AI.",
-    url: "https://deepsite.hf.co",
-    siteName: "DeepSite",
-    images: [
-      {
-        url: "https://deepsite.hf.co/banner.png",
-        width: 1200,
-        height: 630,
-        alt: "DeepSite Open Graph Image",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "DeepSite | Build with AI ✨",
-    description:
-      "DeepSite is a web development tool that helps you build websites with AI, no code required. Let's deploy your website with DeepSite and enjoy the magic of AI.",
-    images: ["https://deepsite.hf.co/banner.png"],
-  },
+    path: "/",
+  }),
   appleWebApp: {
     capable: true,
     title: "DeepSite",
@@ -60,6 +42,9 @@ export const metadata: Metadata = {
     icon: "/logo.svg",
     shortcut: "/logo.svg",
     apple: "/logo.svg",
+  },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION,
   },
 };
 
@@ -91,8 +76,35 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const data = await getMe();
+
+  // Generate structured data
+  const structuredData = generateStructuredData("WebApplication", {
+    name: "DeepSite",
+    description: "Build websites with AI, no code required",
+    url: "https://deepsite.hf.co",
+  });
+
+  const organizationData = generateStructuredData("Organization", {
+    name: "DeepSite",
+    url: "https://deepsite.hf.co",
+  });
+
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredData),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationData),
+          }}
+        />
+      </head>
       <Script
         defer
         data-domain="deepsite.hf.co"

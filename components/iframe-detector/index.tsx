@@ -41,6 +41,42 @@ export default function IframeDetector() {
       }
     };
 
+    // SEO: Add canonical URL meta tag when in iframe
+    const addCanonicalUrl = () => {
+      // Remove existing canonical link if present
+      const existingCanonical = document.querySelector('link[rel="canonical"]');
+      if (existingCanonical) {
+        existingCanonical.remove();
+      }
+
+      // Add canonical URL pointing to the standalone version
+      const canonical = document.createElement("link");
+      canonical.rel = "canonical";
+      canonical.href = window.location.href;
+      document.head.appendChild(canonical);
+
+      // Add meta tag to indicate this page should not be indexed when in iframe from unauthorized domains
+      if (isInIframe() || isEmbedded()) {
+        try {
+          const parentHostname = document.referrer
+            ? new URL(document.referrer).hostname
+            : null;
+          if (parentHostname && !isAllowedDomain(parentHostname)) {
+            // Add noindex meta tag when embedded in unauthorized domains
+            const noIndexMeta = document.createElement("meta");
+            noIndexMeta.name = "robots";
+            noIndexMeta.content = "noindex, nofollow";
+            document.head.appendChild(noIndexMeta);
+          }
+        } catch (error) {
+          // Silently handle cross-origin errors
+          console.debug(
+            "SEO: Could not determine parent domain for iframe indexing rules"
+          );
+        }
+      }
+    };
+
     // Check if we're in an iframe from a non-allowed domain
     const shouldShowWarning = () => {
       if (!isInIframe() && !isEmbedded()) {
@@ -64,6 +100,9 @@ export default function IframeDetector() {
         return true;
       }
     };
+
+    // Always add canonical URL for SEO, regardless of iframe status
+    addCanonicalUrl();
 
     if (shouldShowWarning()) {
       // Show warning modal instead of redirecting immediately

@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# Block access to API routes and private areas
+Disallow: /api/
+Disallow: /auth/
+Disallow: /_next/
+Disallow: /assets/
+
+# Allow specific public API endpoints if needed
+Allow: /api/public/
+
+# Sitemap location
+Sitemap: https://deepsite.hf.co/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
