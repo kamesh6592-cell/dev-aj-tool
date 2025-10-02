@@ -318,14 +318,57 @@ export async function PUT(request: NextRequest) {
   try {
     // Calculate dynamic max_tokens for PUT request
     const systemPrompt = FOLLOW_UP_SYSTEM_PROMPT + (isNew ? PROMPT_FOR_PROJECT_NAME : "");
-    const userContext = previousPrompts
-      ? `Also here are the previous prompts:\n\n${previousPrompts.map((p: string) => `- ${p}`).join("\n")}`
-      : "You are modifying the HTML file based on the user's request.";
+    const userContext = "You are modifying the HTML file based on the user's request.";
+    
+    // Helper function to get only the most relevant pages based on prompt
+    const getRelevantPages = (pages: Page[], prompt: string, maxPages: number = 2): Page[] => {
+      if (pages.length <= maxPages) return pages;
+      
+      // Always include index/main page
+      const indexPage = pages.find(p => p.path === '/' || p.path === '/index' || p.path === 'index');
+      const otherPages = pages.filter(p => p !== indexPage);
+      
+      // If we have a selected element, only include pages that might contain it
+      if (selectedElementHtml) {
+        const elementKeywords = selectedElementHtml.toLowerCase().match(/class=["']([^"']*)["']|id=["']([^"']*)["']/g) || [];
+        const relevantPages = otherPages.filter(page => {
+          const pageContent = page.html.toLowerCase();
+          return elementKeywords.some((keyword: string) => pageContent.includes(keyword.toLowerCase()));
+        });
+        
+        return indexPage ? [indexPage, ...relevantPages.slice(0, maxPages - 1)] : relevantPages.slice(0, maxPages);
+      }
+      
+      // Score pages based on keyword matches from prompt
+      const keywords = prompt.toLowerCase().split(/\s+/).filter(word => word.length > 3);
+      const scoredPages = otherPages.map(page => {
+        const pageContent = (page.path + ' ' + page.html).toLowerCase();
+        const score = keywords.reduce((acc, keyword) => {
+          return acc + (pageContent.includes(keyword) ? 1 : 0);
+        }, 0);
+        return { page, score };
+      });
+      
+      // Sort by relevance and take top pages
+      const topPages = scoredPages
+        .sort((a, b) => b.score - a.score)
+        .slice(0, maxPages - (indexPage ? 1 : 0))
+        .map(item => item.page);
+      
+      return indexPage ? [indexPage, ...topPages] : topPages;
+    };
+
+    // Get only the most relevant pages - provide FULL HTML for accurate replacements
+    const relevantPages = getRelevantPages(pages || [], prompt);
+    const pagesContext = relevantPages
+      .map((p: Page) => `- ${p.path}\n${p.html}`)
+      .join("\n\n");
+    
     const assistantContext = `${
       selectedElementHtml
         ? `\n\nYou have to update ONLY the following element, NOTHING ELSE: \n\n\`\`\`html\n${selectedElementHtml}\n\`\`\` Could be in multiple pages, if so, update all the pages.`
         : ""
-    }. Current pages: ${pages?.map((p: Page) => `- ${p.path} \n${p.html}`).join("\n")}. ${files?.length > 0 ? `Current images: ${files?.map((f: string) => `- ${f}`).join("\n")}.` : ""}`;
+    }. Current pages (${relevantPages.length}/${pages?.length || 0} shown): ${pagesContext}. ${files?.length > 0 ? `Available images: ${files?.map((f: string) => f.split('/').pop()).join(', ')}.` : ""}`;
     
     const estimatedInputTokens = estimateInputTokens(systemPrompt, prompt, userContext + assistantContext);
     const dynamicMaxTokens = calculateMaxTokens(selectedProvider, estimatedInputTokens, false);
