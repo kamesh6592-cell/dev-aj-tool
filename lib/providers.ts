@@ -1,6 +1,7 @@
 import DeepSeekLogo from "@/assets/deepseek.svg";
 import QwenLogo from "@/assets/qwen.svg";
 import KimiLogo from "@/assets/kimi.svg";
+import ZaiLogo from "@/assets/zai.svg";
 
 export const PROVIDERS = {
   "fireworks-ai": {
@@ -30,6 +31,10 @@ export const PROVIDERS = {
   groq: {
     name: "Groq",
     id: "groq",
+  },
+  "zai-org": {
+    name: "Z.ai",
+    id: "zai",
   },
 };
 
@@ -91,4 +96,10 @@ export const MODELS = [
     logo: KimiLogo,
     companyName: "Kimi",
   },
+  {
+    value: "zai-org/GLM-4.6",
+    label: "GLM-4.6",
+    logo: ZaiLogo,
+    companyName: "Z.ai",
+  }
 ];

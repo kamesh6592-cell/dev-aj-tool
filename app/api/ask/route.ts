@@ -55,17 +55,6 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (!selectedModel.providers.includes(provider) && provider !== "auto") {
-    return NextResponse.json(
-      {
-        ok: false,
-        error: `The selected model does not support the ${provider} provider.`,
-        openSelectProvider: true,
-      },
-      { status: 400 }
-    );
-  }
-
   let token: string | null = null;
   if (userToken) token = userToken;
   let billTo: string | null = null;
