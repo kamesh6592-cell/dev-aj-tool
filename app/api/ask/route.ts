@@ -353,7 +353,7 @@ export async function PUT(request: NextRequest) {
       selectedElementHtml
         ? `\n\nYou have to update ONLY the following element, NOTHING ELSE: \n\n\`\`\`html\n${selectedElementHtml}\n\`\`\` Could be in multiple pages, if so, update all the pages.`
         : ""
-    }. Current pages (${relevantPages.length}/${pages?.length || 0} shown): ${pagesContext}. ${files?.length > 0 ? `Available images: ${files?.map((f: string) => f.split('/').pop()).join(', ')}.` : ""}`;
+    }. Current pages (${relevantPages.length}/${pages?.length || 0} shown): ${pagesContext}. ${files?.length > 0 ? `Available images: ${files?.map((f: string) => f).join(', ')}.` : ""}`;
     
     const estimatedInputTokens = estimateInputTokens(systemPrompt, prompt, userContext + assistantContext);
     const dynamicMaxTokens = calculateMaxTokens(selectedProvider, estimatedInputTokens, false);
