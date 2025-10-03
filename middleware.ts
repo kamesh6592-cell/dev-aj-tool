@@ -5,23 +5,11 @@ export function middleware(request: NextRequest) {
   const headers = new Headers(request.headers);
   headers.set("x-current-host", request.nextUrl.host);
   
-  // Create response with headers
   const response = NextResponse.next({ headers });
-  
-  // Add SEO and security headers
-  // Only set X-Frame-Options for non-HF spaces domains
-  // if (!request.nextUrl.host.includes('hf.space') && !request.nextUrl.host.includes('huggingface.co') && !request.nextUrl.host.includes('hf.co')) {
-  //   response.headers.set('X-Frame-Options', 'SAMEORIGIN');
-  // }
-  // response.headers.set('X-Content-Type-Options', 'nosniff');
-  // response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  
-  // Add cache control for better performance
+
   if (request.nextUrl.pathname.startsWith('/_next/static')) {
     response.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
   }
-  
-  // Add canonical URL headers for programmatic access
   response.headers.set('X-Canonical-URL', `https://deepsite.hf.co${request.nextUrl.pathname}`);
   
   return response;

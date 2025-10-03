@@ -292,17 +292,15 @@ export async function PUT(request: NextRequest) {
 
   const client = new InferenceClient(token);
 
-  // Helper function to escape regex special characters
   const escapeRegExp = (string: string) => {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   };
 
-  // Helper function to create flexible HTML regex that handles varying spaces
   const createFlexibleHtmlRegex = (searchBlock: string) => {
     let searchRegex = escapeRegExp(searchBlock)
-      .replace(/\s+/g, '\\s*') // Allow any amount of whitespace where there are spaces
-      .replace(/>\s*</g, '>\\s*<') // Allow spaces between HTML tags
-      .replace(/\s*>/g, '\\s*>'); // Allow spaces before closing >
+      .replace(/\s+/g, '\\s*')
+      .replace(/>\s*</g, '>\\s*<')
+      .replace(/\s*>/g, '\\s*>');
     
     return new RegExp(searchRegex, 'g');
   };
@@ -310,19 +308,15 @@ export async function PUT(request: NextRequest) {
   const selectedProvider = await getBestProvider(selectedModel.value, provider)
 
   try {
-    // Calculate dynamic max_tokens for PUT request
     const systemPrompt = FOLLOW_UP_SYSTEM_PROMPT + (isNew ? PROMPT_FOR_PROJECT_NAME : "");
     const userContext = "You are modifying the HTML file based on the user's request.";
     
-    // Helper function to get only the most relevant pages based on prompt
     const getRelevantPages = (pages: Page[], prompt: string, maxPages: number = 2): Page[] => {
       if (pages.length <= maxPages) return pages;
       
-      // Always include index/main page
       const indexPage = pages.find(p => p.path === '/' || p.path === '/index' || p.path === 'index');
       const otherPages = pages.filter(p => p !== indexPage);
       
-      // If we have a selected element, only include pages that might contain it
       if (selectedElementHtml) {
         const elementKeywords = selectedElementHtml.toLowerCase().match(/class=["']([^"']*)["']|id=["']([^"']*)["']/g) || [];
         const relevantPages = otherPages.filter(page => {
@@ -333,7 +327,6 @@ export async function PUT(request: NextRequest) {
         return indexPage ? [indexPage, ...relevantPages.slice(0, maxPages - 1)] : relevantPages.slice(0, maxPages);
       }
       
-      // Score pages based on keyword matches from prompt
       const keywords = prompt.toLowerCase().split(/\s+/).filter(word => word.length > 3);
       const scoredPages = otherPages.map(page => {
         const pageContent = (page.path + ' ' + page.html).toLowerCase();
@@ -343,7 +336,6 @@ export async function PUT(request: NextRequest) {
         return { page, score };
       });
       
-      // Sort by relevance and take top pages
       const topPages = scoredPages
         .sort((a, b) => b.score - a.score)
         .slice(0, maxPages - (indexPage ? 1 : 0))
@@ -352,7 +344,6 @@ export async function PUT(request: NextRequest) {
       return indexPage ? [indexPage, ...topPages] : topPages;
     };
 
-    // Get only the most relevant pages - provide FULL HTML for accurate replacements
     const relevantPages = getRelevantPages(pages || [], prompt);
     const pagesContext = relevantPages
       .map((p: Page) => `- ${p.path}\n${p.html}`)
