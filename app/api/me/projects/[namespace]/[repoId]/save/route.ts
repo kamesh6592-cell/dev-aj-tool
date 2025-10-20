@@ -3,7 +3,6 @@ import { uploadFiles } from "@huggingface/hub";
 
 import { isAuthenticated } from "@/lib/auth";
 import { Page } from "@/types";
-import { injectDeepSiteBadge, isIndexPage } from "@/lib/inject-badge";
 
 export async function PUT(
   req: NextRequest,
@@ -38,11 +37,7 @@ export async function PUT(
       } else if (page.path.endsWith(".json")) {
         mimeType = "application/json";
       }
-      // Inject the DeepSite badge script into index pages only (not components or other HTML files)
-      const content = (mimeType === "text/html" && isIndexPage(page.path)) 
-        ? injectDeepSiteBadge(page.html) 
-        : page.html;
-      const file = new File([content], page.path, { type: mimeType });
+      const file = new File([page.html], page.path, { type: mimeType });
       files.push(file);
     });
 

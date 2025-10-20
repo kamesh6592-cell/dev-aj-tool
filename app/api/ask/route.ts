@@ -546,7 +546,7 @@ export async function PUT(request: NextRequest) {
         } else if (page.path.endsWith(".json")) {
           mimeType = "application/json";
         }
-        const content = (mimeType === "text/html" && isIndexPage(page.path)) 
+        const content = (mimeType === "text/html" && isIndexPage(page.path)) && isNew
           ? injectDeepSiteBadge(page.html) 
           : page.html;
         const file = new File([content], page.path, { type: mimeType });
