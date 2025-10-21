@@ -36,8 +36,14 @@ interface FileNode {
 }
 
 export function FileBrowser() {
-  const { pages, currentPage, setCurrentPage, globalEditorLoading, project } =
-    useEditor();
+  const {
+    pages,
+    currentPage,
+    setCurrentPage,
+    setPreviewPage,
+    globalEditorLoading,
+    project,
+  } = useEditor();
   const [open, setOpen] = useState(false);
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(
     new Set(["/"])
@@ -300,6 +306,12 @@ export function FileBrowser() {
             onClick={() => {
               if (node.page) {
                 setCurrentPage(node.page.path);
+                if (
+                  node.page.path.endsWith(".html") &&
+                  !node.page.path.includes("components")
+                ) {
+                  setPreviewPage(node.page.path);
+                }
                 setOpen(false);
               }
             }}
