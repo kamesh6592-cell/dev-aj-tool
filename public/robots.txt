@@ -11,7 +11,7 @@ Disallow: /assets/
 Allow: /api/public/
 
 # Sitemap location
-Sitemap: https://hf.co/deepsite/sitemap.xml
+Sitemap: https://huggingface.co/deepsite/sitemap.xml
 
 # Crawl-delay for respectful crawling
 Crawl-delay: 1

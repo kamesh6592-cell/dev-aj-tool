@@ -21,7 +21,7 @@ export default function IframeWarningModal({
 }: // onOpenChange,
 IframeWarningModalProps) {
   const handleVisitSite = () => {
-    window.open("https://hf.co/deepsite", "_blank");
+    window.open("https://huggingface.co/deepsite", "_blank");
   };
 
   return (
@@ -52,7 +52,7 @@ IframeWarningModalProps) {
         <DialogFooter className="flex-col sm:flex-row gap-2">
           <Button onClick={handleVisitSite} className="w-full sm:w-auto">
             <ExternalLink className="mr-2 h-4 w-4" />
-            Visit hf.co/deepsite
+            Visit huggingface.co/deepsite
           </Button>
         </DialogFooter>
       </DialogContent>

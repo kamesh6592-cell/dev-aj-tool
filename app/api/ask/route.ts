@@ -584,7 +584,7 @@ tags:
 ---
 
 # Welcome to your new DeepSite project!
-This project was created with [DeepSite](https://hf.co/deepsite).
+This project was created with [DeepSite](https://huggingface.co/deepsite).
       `;
         files.push(new File([README], "README.md", { type: "text/markdown" }));
       }

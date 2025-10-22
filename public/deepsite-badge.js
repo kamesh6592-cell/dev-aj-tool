@@ -73,13 +73,13 @@
   
   // Create link
   const link = document.createElement('a');
-  link.href = 'https://hf.co/deepsite';
+  link.href = 'https://huggingface.co/deepsite';
   link.target = '_blank';
   link.rel = 'noopener noreferrer';
   
   // Create icon placeholder
   const icon = document.createElement('img');
-  icon.src = 'https://hf.co/deepsite/logo.svg';
+  icon.src = 'https://huggingface.co/deepsite/logo.svg';
   icon.alt = 'DeepSite';
   icon.style.marginRight = '6px';
   icon.style.width = '16px';

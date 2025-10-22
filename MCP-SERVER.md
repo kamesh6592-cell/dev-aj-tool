@@ -32,7 +32,7 @@ Add to your Claude Desktop configuration file:
 {
   "mcpServers": {
     "deepsite": {
-      "url": "https://hf.co/deepsite/api/mcp",
+      "url": "https://huggingface.co/deepsite/api/mcp",
       "transport": {
         "type": "sse"
       },
@@ -92,7 +92,7 @@ npm run build
       "args": ["/absolute/path/to/deepsite-v3/mcp-server/dist/index.js"],
       "env": {
         "HF_TOKEN": "hf_your_token_here",
-        "DEEPSITE_API_URL": "https://hf.co/deepsite"
+        "DEEPSITE_API_URL": "https://huggingface.co/deepsite"
       }
     }
   }
@@ -109,7 +109,7 @@ npm run build
       "args": ["/absolute/path/to/deepsite-v3/mcp-server/dist/index.js"],
       "env": {
         "DEEPSITE_AUTH_COOKIE": "your-session-cookie",
-        "DEEPSITE_API_URL": "https://hf.co/deepsite"
+        "DEEPSITE_API_URL": "https://huggingface.co/deepsite"
       }
     }
   }
@@ -118,7 +118,7 @@ npm run build
 
 **Getting Your Session Cookie (Method B only):**
 
-1. Log in to https://hf.co/deepsite
+1. Log in to https://huggingface.co/deepsite
 2. Open Developer Tools (F12)
 3. Go to Application → Cookies
 4. Copy the session cookie value
@@ -154,7 +154,7 @@ Creates a new DeepSite project with HTML/CSS/JS files.
 {
   "success": true,
   "message": "Project created successfully!",
-  "projectUrl": "https://hf.co/deepsite/username/project-name",
+  "projectUrl": "https://huggingface.co/deepsite/username/project-name",
   "spaceUrl": "https://huggingface.co/spaces/username/project-name",
   "liveUrl": "https://username-project-name.hf.space",
   "spaceId": "username/project-name",
@@ -204,7 +204,7 @@ You can also call the HTTP endpoint directly:
 ### Using Authorization Header (Recommended)
 
 ```bash
-curl -X POST https://hf.co/deepsite/api/mcp \
+curl -X POST https://huggingface.co/deepsite/api/mcp \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer hf_your_token_here" \
   -d '{
@@ -229,7 +229,7 @@ curl -X POST https://hf.co/deepsite/api/mcp \
 ### Using Token Parameter (Fallback)
 
 ```bash
-curl -X POST https://hf.co/deepsite/api/mcp \
+curl -X POST https://huggingface.co/deepsite/api/mcp \
   -H "Content-Type: application/json" \
   -d '{
     "jsonrpc": "2.0",
@@ -254,7 +254,7 @@ curl -X POST https://hf.co/deepsite/api/mcp \
 ### List Available Tools
 
 ```bash
-curl -X POST https://hf.co/deepsite/api/mcp \
+curl -X POST https://huggingface.co/deepsite/api/mcp \
   -H "Content-Type: application/json" \
   -d '{
     "jsonrpc": "2.0",
@@ -278,7 +278,7 @@ cd mcp-server
 ### Test HTTP Server
 
 ```bash
-curl -X POST https://hf.co/deepsite/api/mcp \
+curl -X POST https://huggingface.co/deepsite/api/mcp \
   -H "Content-Type: application/json" \
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'
 ```
@@ -297,7 +297,7 @@ Edit your Claude Desktop config file and add the `headers` section:
 {
   "mcpServers": {
     "deepsite": {
-      "url": "https://hf.co/deepsite/api/mcp",
+      "url": "https://huggingface.co/deepsite/api/mcp",
       "transport": {
         "type": "sse"
       },
@@ -377,7 +377,7 @@ Claude Desktop
       ↓
  (HTTP Request)
       ↓
-hf.co/deepsite/api/mcp
+huggingface.co/deepsite/api/mcp
       ↓
 Hugging Face API (with user's token)
       ↓
@@ -396,7 +396,7 @@ Local MCP Server
       ↓
  (HTTP to DeepSite API)
       ↓
-hf.co/deepsite/api/me/projects
+huggingface.co/deepsite/api/me/projects
       ↓
 New Space Created
 ```
@@ -422,7 +422,7 @@ MIT
 ## Resources
 
 - [Model Context Protocol Spec](https://modelcontextprotocol.io/)
-- [DeepSite Documentation](https://hf.co/deepsite)
+- [DeepSite Documentation](https://huggingface.co/deepsite)
 - [Hugging Face Spaces](https://huggingface.co/docs/hub/spaces)
 - [Claude Desktop](https://claude.ai/desktop)
 

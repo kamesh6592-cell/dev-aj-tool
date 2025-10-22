@@ -6,7 +6,7 @@
  * @returns The HTML content with the badge script injected
  */
 export function injectDeepSiteBadge(html: string): string {
-  const badgeScript = '<script src="https://hf.co/deepsite/deepsite-badge.js"></script>';
+  const badgeScript = '<script src="https://huggingface.co/deepsite/deepsite-badge.js"></script>';
   
   // Remove any existing badge script to avoid duplicates
   const cleanedHtml = html.replace(
