@@ -1,8 +1,10 @@
 import type { NextConfig } from "next";
 
+const isHuggingFaceSpaces = process.env.SPACE_ID || process.env.SPACE_HOST;
+
 const nextConfig: NextConfig = {
   /* config options here */
-  basePath: '/deepsite',
+  ...(isHuggingFaceSpaces ? {} : { basePath: '/deepsite' }),
   webpack(config, options) {
     const { isServer } = options;
     config.module.rules.push({
@@ -14,7 +16,7 @@ const nextConfig: NextConfig = {
           options: {
             limit: config.inlineImageLimit,
             fallback: require.resolve("file-loader"),
-            publicPath: `${config.assetPrefix || '/deepsite'}/_next/static/images/`,
+            publicPath: `${config.assetPrefix || (isHuggingFaceSpaces ? '' : '/deepsite')}/_next/static/images/`,
             outputPath: `${isServer ? "../" : ""}static/images/`,
             name: "[name]-[hash].[ext]",
             esModule: config.esModule || false,
