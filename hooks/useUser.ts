@@ -76,7 +76,7 @@ export const useUser = (initialData?: {
           
           setToken(res.data.access_token, {
             expires: expiresDate,
-            path: '/deepsite',
+            path: '/',
             sameSite: 'lax',
             secure: window.location.protocol === 'https:',
           });
