@@ -74,7 +74,6 @@ export async function POST(req: NextRequest) {
   const cookieName = MY_TOKEN_KEY();
   const isProduction = process.env.NODE_ENV === "production";
   
-  // Create response with user data
   const nextResponse = NextResponse.json(
     {
       access_token: response.access_token,
@@ -93,7 +92,7 @@ export async function POST(req: NextRequest) {
   const cookieOptions = [
     `${cookieName}=${response.access_token}`,
     `Max-Age=${response.expires_in || 3600}`, // Default 1 hour if not provided
-    "Path=/",
+    "Path=/deepsite",
     "HttpOnly",
     ...(isProduction ? ["Secure", "SameSite=None"] : ["SameSite=Lax"])
   ].join("; ");
