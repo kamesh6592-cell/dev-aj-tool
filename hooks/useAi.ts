@@ -163,7 +163,7 @@ export const useAi = (onScrollToBottom?: () => void) => {
     setController(abortController);
     
     try {
-      const request = await fetch("/api/ask", {
+      const request = await fetch("/deepsite/api/ask", {
         method: "POST",
         body: JSON.stringify({
           prompt,
@@ -287,7 +287,7 @@ export const useAi = (onScrollToBottom?: () => void) => {
         ? pages.filter(page => page.path === contextFile)
         : pages;
 
-      const request = await fetch("/api/ask", {
+      const request = await fetch("/deepsite/api/ask", {
         method: "PUT",
         body: JSON.stringify({
           prompt,

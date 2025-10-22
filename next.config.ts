@@ -2,6 +2,17 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  basePath: '/deepsite',
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/deepsite',
+        permanent: true,
+        basePath: false,
+      },
+    ];
+  },
   webpack(config, options) {
     const { isServer } = options;
     config.module.rules.push({
