@@ -8,6 +8,7 @@ import { ProjectType, User } from "@/types";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 import MY_TOKEN_KEY from "@/lib/get-cookie-name";
+import { useBroadcastChannel } from "@/lib/useBroadcastChannel";
 
 
 export const useUser = (initialData?: {
@@ -63,8 +64,50 @@ export const useUser = (initialData?: {
     client.setQueryData(["me.projects"], projects);
   };
 
+  // Listen for OAuth callback from popup window
+  useBroadcastChannel("auth", (message: any) => {
+    if (message.type === "user-oauth" && message.code) {
+      loginFromCode(message.code);
+    }
+  });
+
+  const isInIframe = () => {
+    try {
+      return window.self !== window.top;
+    } catch {
+      return true;
+    }
+  };
+
   const openLoginWindow = async () => {
     setCurrentRoute(window.location.pathname);
+    
+    // If in iframe, open OAuth in popup window
+    if (isInIframe()) {
+      try {
+        const response = await api.get("/auth/login-url");
+        const loginUrl = response.data?.loginUrl;
+        
+        if (loginUrl) {
+          const width = 600;
+          const height = 700;
+          const left = (window.screen.width - width) / 2;
+          const top = (window.screen.height - height) / 2;
+          
+          window.open(
+            loginUrl,
+            "HuggingFace Login",
+            `width=${width},height=${height},left=${left},top=${top},popup=yes`
+          );
+          return;
+        }
+      } catch (error) {
+        console.error("Failed to open login popup:", error);
+        toast.error("Failed to open login window");
+      }
+    }
+    
+    // Default: navigate to auth page (for non-iframe contexts)
     return router.push("/auth");
   };
 
