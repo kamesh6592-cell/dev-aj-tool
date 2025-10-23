@@ -14,8 +14,8 @@ export default function DomainRedirect() {
       host === "huggingface.co" || host.startsWith("huggingface.co:");
 
     if (!isHfCo && !isHuggingFaceCo) {
-      // Open the correct URL in a new tab
-      window.open("https://huggingface.co/deepsite", "_blank");
+      // Redirect to the correct URL
+      window.location.replace("https://huggingface.co/deepsite");
     }
   }, []);
 

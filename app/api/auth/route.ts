@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     req.headers.get("host") ?? req.headers.get("origin") ?? "localhost:3000";
 
   const url = host.includes("/spaces/enzostvs")
-    ? "enzostvs-deepsite.hf.space"
+    ? "huggingface.co/deepsite"
     : host;
   const redirect_uri =
     `${host.includes("localhost") ? "http://" : "https://"}` +

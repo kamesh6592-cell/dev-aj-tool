@@ -215,22 +215,16 @@ export const useEditor = (namespace?: string, repoId?: string) => {
         data.append("images", file); // Keep using "images" key for backward compatibility
       });
 
-      const response = await fetch(
-        `/deepsite/api/me/projects/${project.space_id}/images`,
-        {
-          method: "POST",
-          body: data,
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
-        }
+      const response = await api.post(
+        `/me/projects/${project.space_id}/images`,
+        data
       );
-      
-      if (!response.ok) {
+
+      if (!response.data.ok) {
         throw new Error('Upload failed');
       }
       
-      return response.json();
+      return response.data;
     },
     onSuccess: (data) => {
       setFiles((prev) => [...prev, ...data.uploadedFiles]);
