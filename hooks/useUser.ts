@@ -79,19 +79,21 @@ export const useUser = (initialData?: {
           const expiresDate = new Date();
           expiresDate.setTime(expiresDate.getTime() + expiresIn * 1000);
           
+          const isProduction = window.location.protocol === 'https:';
+          
           const cookieOptions: any = {
             expires: expiresDate,
             path: '/',
-            sameSite: 'lax',
+            sameSite: isProduction ? 'none' : 'lax',
           };
           
-          if (window.location.protocol === 'https:') {
+          if (isProduction) {
             cookieOptions.secure = true;
           }
           
           setToken(res.data.access_token, cookieOptions);
           
-          const cookieString = `${MY_TOKEN_KEY()}=${res.data.access_token}; path=/; max-age=${expiresIn}; samesite=lax${cookieOptions.secure ? '; secure' : ''}`;
+          const cookieString = `${MY_TOKEN_KEY()}=${res.data.access_token}; path=/; max-age=${expiresIn}; samesite=${isProduction ? 'none' : 'lax'}${cookieOptions.secure ? '; secure' : ''}`;
           document.cookie = cookieString;
           
           refetchMe();

@@ -74,8 +74,6 @@ export function generateSEO({
       creator: "@deepsite",
     },
     other: {
-      // Prevent iframe embedding from unauthorized domains
-      'X-Frame-Options': 'SAMEORIGIN',
       // Control how the page appears when shared
       'og:image:secure_url': `${baseUrl}${image}`,
       // Help search engines understand the primary URL
