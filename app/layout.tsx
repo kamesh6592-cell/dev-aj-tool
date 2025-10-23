@@ -111,7 +111,7 @@ export default async function RootLayout({
         />
         <Script
           defer
-          data-domain="huggingface.co/deepsite"
+          data-domain="deepsite.hf.co"
           src="https://plausible.io/js/script.js"
         />
         <DomainRedirect />
