@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
   if (host.includes("localhost")) {
     url = host;
   } else {
-    url = "huggingface.co/deepsite";
+    url = "huggingface.co";
   }
   
   const redirect_uri =
