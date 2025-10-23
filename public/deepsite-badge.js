@@ -6,6 +6,13 @@
     return;
   }
 
+  // Don't show badge on huggingface.co/deepsite
+  const hostname = window.location.hostname;
+  const pathname = window.location.pathname;
+  if (hostname === 'huggingface.co' && pathname.startsWith('/deepsite')) {
+    return;
+  }
+
   // Inject keyframes for gradient rotation
   const style = document.createElement('style');
   style.textContent = `
