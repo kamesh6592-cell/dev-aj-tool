@@ -216,7 +216,7 @@ export const useEditor = (namespace?: string, repoId?: string) => {
       });
 
       const response = await fetch(
-        `/api/me/projects/${project.space_id}/images`,
+        `/deepsite/api/me/projects/${project.space_id}/images`,
         {
           method: "POST",
           body: data,
