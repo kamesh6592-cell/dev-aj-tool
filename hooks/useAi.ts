@@ -311,21 +311,50 @@ export const useAi = (onScrollToBottom?: () => void) => {
       });
 
       if (request && request.body) {
-        // Clone the response so we can read it twice if needed
+        if (request.status === 504) {
+          console.warn("++504 GATEWAY TIMEOUT - Upload likely succeeded but response timed out++");
+          console.warn("++REQUEST STATUS++", request.status);
+          console.warn("++REQUEST BODY++", request.body);
+          
+          setIsAiWorking(false);
+          
+          if (isNew) {
+            toast.error("The request timed out. Your project may have been created. Please check your HuggingFace spaces.");
+            return { error: "gateway_timeout", message: "Request timed out after upload" };
+          }
+          
+          toast.success("Changes saved! Refreshing page to show updates...", { duration: 3000 });
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+          return { success: true, timedOut: true };
+        }
+        
         const clonedRequest = request.clone();
         let res;
         try {
           res = await request.json();
         } catch (jsonError: any) {
-          console.error("++JSON PARSE ERROR++", jsonError);
-          // Try to get the actual response text from the clone
           try {
             const text = await clonedRequest.text();
-            console.error("++RESPONSE TEXT++", text.substring(0, 1000));
-            console.error("++RESPONSE STATUS++", clonedRequest.status);
-            console.error("++RESPONSE HEADERS++", Array.from(clonedRequest.headers.entries()));
+            
+            // Check if it's a CloudFront/gateway timeout in the HTML
+            if (text.includes("504") || text.includes("Gateway Timeout") || text.includes("gateway timeout")) {
+              console.warn("++DETECTED 504 IN HTML RESPONSE++");
+              setIsAiWorking(false);
+              
+              if (isNew) {
+                toast.error("The request timed out. Your project may have been created. Please check your HuggingFace spaces.");
+                return { error: "gateway_timeout", message: "Request timed out after upload" };
+              }
+              
+              toast.success("Changes saved! Refreshing page to show updates...", { duration: 3000 });
+              setTimeout(() => {
+                window.location.reload();
+              }, 1000);
+              return { success: true, timedOut: true };
+            }
           } catch (textError) {
-            console.error("++UNABLE TO READ RESPONSE TEXT++", textError);
           }
           setIsAiWorking(false);
           toast.error("Server returned invalid response. Check console for details.");

@@ -671,7 +671,8 @@ This project was created with [DeepSite](https://huggingface.co/deepsite).
 
       let response;
       try {
-        response = await uploadFiles({
+        // Add a timeout wrapper for the upload
+        const uploadPromise = uploadFiles({
           repo: {
             type: "space",
             name: repoId,
@@ -680,21 +681,38 @@ This project was created with [DeepSite](https://huggingface.co/deepsite).
           commitTitle: prompt,
           accessToken: user.token as string,
         });
+        
+        const uploadTimeout = new Promise<never>((_, reject) => {
+          setTimeout(() => {
+            reject(new Error('Upload operation timed out'));
+          }, 180000); // 3 minutes timeout for upload
+        });
+        
+        response = await Promise.race([uploadPromise, uploadTimeout]);
       } catch (uploadError: any) {
         console.error("++UPLOAD FILES ERROR++", uploadError);
         console.error("++UPLOAD FILES ERROR MESSAGE++", uploadError.message);
         console.error("++REPO ID++", repoId);
+        
+        // If it's a timeout, files might have been uploaded but we didn't get response
+        if (uploadError.message?.includes('timed out') || uploadError.message?.includes('timeout')) {
+          console.warn("++UPLOAD TIMEOUT - Files may have been uploaded++");
+          // Return a partial success response
+          return NextResponse.json({
+            ok: true,
+            updatedLines,
+            pages: updatedPages,
+            repoId,
+            commit: {
+              title: prompt,
+              oid: 'timeout',
+              timedOut: true,
+            }
+          });
+        }
+        
         throw new Error(`Failed to upload files to repository: ${uploadError.message || 'Unknown error'}`);
       }
-
-      console.log("++UPLOAD SUCCESS++");
-      console.log("++RESPONSE STRUCTURE++", JSON.stringify({
-        hasCommit: !!response?.commit,
-        commitKeys: response?.commit ? Object.keys(response.commit) : [],
-        responseKeys: response ? Object.keys(response) : []
-      }));
-
-      // Safely construct the response
       const responseData: any = {
         ok: true,
         updatedLines,
@@ -702,22 +720,17 @@ This project was created with [DeepSite](https://huggingface.co/deepsite).
         repoId,
       };
 
-      // Only add commit if it exists and has valid structure
       if (response && response.commit) {
         responseData.commit = {
           ...response.commit,
           title: prompt,
         };
       } else {
-        console.warn("++NO COMMIT IN RESPONSE++");
-        // Provide a fallback commit structure
         responseData.commit = {
           title: prompt,
           oid: 'unknown',
         };
       }
-
-      console.log("++ABOUT TO RETURN JSON++", JSON.stringify(responseData).substring(0, 200));
 
       return NextResponse.json(responseData);
     } else {
