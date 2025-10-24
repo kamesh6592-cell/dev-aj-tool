@@ -410,8 +410,8 @@ export async function PUT(request: NextRequest) {
       // Clear timeout if successful
       if (timeoutId) clearTimeout(timeoutId);
     } catch (timeoutError: any) {
-      console.log("++TIMEOUT ERROR++", timeoutError)
-      console.log("++TIMEOUT ERROR MESSAGE++", timeoutError.message)
+      console.error("++TIMEOUT ERROR++", timeoutError);
+      console.error("++TIMEOUT ERROR MESSAGE++", timeoutError.message);
       // Clear timeout on error
       if (timeoutId) clearTimeout(timeoutId);
       
@@ -687,16 +687,39 @@ This project was created with [DeepSite](https://huggingface.co/deepsite).
         throw new Error(`Failed to upload files to repository: ${uploadError.message || 'Unknown error'}`);
       }
 
-      return NextResponse.json({
+      console.log("++UPLOAD SUCCESS++");
+      console.log("++RESPONSE STRUCTURE++", JSON.stringify({
+        hasCommit: !!response?.commit,
+        commitKeys: response?.commit ? Object.keys(response.commit) : [],
+        responseKeys: response ? Object.keys(response) : []
+      }));
+
+      // Safely construct the response
+      const responseData: any = {
         ok: true,
         updatedLines,
         pages: updatedPages,
         repoId,
-        commit: {
+      };
+
+      // Only add commit if it exists and has valid structure
+      if (response && response.commit) {
+        responseData.commit = {
           ...response.commit,
           title: prompt,
-        }
-      });
+        };
+      } else {
+        console.warn("++NO COMMIT IN RESPONSE++");
+        // Provide a fallback commit structure
+        responseData.commit = {
+          title: prompt,
+          oid: 'unknown',
+        };
+      }
+
+      console.log("++ABOUT TO RETURN JSON++", JSON.stringify(responseData).substring(0, 200));
+
+      return NextResponse.json(responseData);
     } else {
       return NextResponse.json(
         { ok: false, message: "No content returned from the model" },
@@ -704,8 +727,8 @@ This project was created with [DeepSite](https://huggingface.co/deepsite).
       );
     }
   } catch (error: any) {
-    console.log("++ERROR++", error)
-    console.log("++ERROR MESSAGE++", error.message)
+    console.error("++ERROR++", error);
+    console.error("++ERROR MESSAGE++", error.message);
     if (error.message?.includes('timeout') || error.message?.includes('Request timeout')) {
       return NextResponse.json(
         {

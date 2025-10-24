@@ -311,7 +311,26 @@ export const useAi = (onScrollToBottom?: () => void) => {
       });
 
       if (request && request.body) {
-        const res = await request.json();
+        // Clone the response so we can read it twice if needed
+        const clonedRequest = request.clone();
+        let res;
+        try {
+          res = await request.json();
+        } catch (jsonError: any) {
+          console.error("++JSON PARSE ERROR++", jsonError);
+          // Try to get the actual response text from the clone
+          try {
+            const text = await clonedRequest.text();
+            console.error("++RESPONSE TEXT++", text.substring(0, 1000));
+            console.error("++RESPONSE STATUS++", clonedRequest.status);
+            console.error("++RESPONSE HEADERS++", Array.from(clonedRequest.headers.entries()));
+          } catch (textError) {
+            console.error("++UNABLE TO READ RESPONSE TEXT++", textError);
+          }
+          setIsAiWorking(false);
+          toast.error("Server returned invalid response. Check console for details.");
+          return { error: "invalid_response", message: "Server returned non-JSON response" };
+        }
         
         if (!request.ok) {
           if (res.openLogin) {
