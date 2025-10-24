@@ -638,11 +638,18 @@ export async function PUT(request: NextRequest) {
           type: "space",
           name: `${user.name}/${formattedTitle}`,
         };
-        const { repoUrl} = await createRepo({
-          repo,
-          accessToken: user.token as string,
-        });
-        repoId = repoUrl.split("/").slice(-2).join("/");
+        
+        try {
+          const { repoUrl} = await createRepo({
+            repo,
+            accessToken: user.token as string,
+          });
+          repoId = repoUrl.split("/").slice(-2).join("/");
+        } catch (createRepoError: any) {
+          console.error("++CREATE REPO ERROR++", createRepoError);
+          throw new Error(`Failed to create repository: ${createRepoError.message || 'Unknown error'}`);
+        }
+        
         const colorFrom = COLORS[Math.floor(Math.random() * COLORS.length)];
         const colorTo = COLORS[Math.floor(Math.random() * COLORS.length)];
         const README = `---
@@ -662,15 +669,23 @@ This project was created with [DeepSite](https://huggingface.co/deepsite).
         files.push(new File([README], "README.md", { type: "text/markdown" }));
       }
 
-      const response = await uploadFiles({
-        repo: {
-          type: "space",
-          name: repoId,
-        },
-        files,
-        commitTitle: prompt,
-        accessToken: user.token as string,
-      });
+      let response;
+      try {
+        response = await uploadFiles({
+          repo: {
+            type: "space",
+            name: repoId,
+          },
+          files,
+          commitTitle: prompt,
+          accessToken: user.token as string,
+        });
+      } catch (uploadError: any) {
+        console.error("++UPLOAD FILES ERROR++", uploadError);
+        console.error("++UPLOAD FILES ERROR MESSAGE++", uploadError.message);
+        console.error("++REPO ID++", repoId);
+        throw new Error(`Failed to upload files to repository: ${uploadError.message || 'Unknown error'}`);
+      }
 
       return NextResponse.json({
         ok: true,
