@@ -313,7 +313,7 @@ export const AskAi = ({
         </div>
       </div>
       <audio ref={hookAudio} id="audio" className="hidden">
-        <source src="/success.mp3" type="audio/mpeg" />
+        <source src="/deepsite/success.mp3" type="audio/mpeg" />
         Your browser does not support the audio element.
       </audio>
     </div>

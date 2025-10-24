@@ -320,22 +320,46 @@ export const Preview = ({ isNew }: { isNew: boolean }) => {
     if (iframeRef?.current) {
       const iframeDocument = iframeRef.current.contentDocument;
       if (iframeDocument) {
-        const targetElement = event.target as HTMLElement;
+        const path = event.composedPath();
+        const targetElement = path[0] as HTMLElement;
+
+        console.log(
+          "[handleClick] Target element:",
+          targetElement.tagName,
+          targetElement
+        );
 
         const findClosestAnchor = (
           element: HTMLElement
         ): HTMLAnchorElement | null => {
-          let current = element;
-          while (current && current !== iframeDocument.body) {
-            if (current.tagName === "A") {
+          let current: HTMLElement | null = element;
+          while (current) {
+            console.log("[handleClick] Checking element:", current.tagName);
+            if (current.tagName?.toUpperCase() === "A") {
               return current as HTMLAnchorElement;
             }
-            current = current.parentElement as HTMLElement;
+            if (current === iframeDocument.body) {
+              break;
+            }
+            const parent: Node | null = current.parentNode;
+            // Use nodeType to check - works across iframe boundaries
+            // nodeType 1 = Element, nodeType 11 = DocumentFragment (including ShadowRoot)
+            if (parent && parent.nodeType === 11) {
+              // ShadowRoot
+              current = (parent as ShadowRoot).host as HTMLElement;
+            } else if (parent && parent.nodeType === 1) {
+              // Element node
+              current = parent as HTMLElement;
+            } else {
+              break;
+            }
           }
           return null;
         };
 
         const anchorElement = findClosestAnchor(targetElement);
+
+        console.log("[handleClick] Found anchor:", anchorElement);
 
         if (anchorElement) {
           return;
@@ -355,20 +379,49 @@ export const Preview = ({ isNew }: { isNew: boolean }) => {
         const path = event.composedPath();
         const actualTarget = path[0] as HTMLElement;
 
+        console.log(
+          "[handleCustomNavigation] Click detected in iframe:",
+          actualTarget.tagName,
+          actualTarget
+        );
+
         const findClosestAnchor = (
           element: HTMLElement
         ): HTMLAnchorElement | null => {
           let current: HTMLElement | null = element;
-          while (current && current !== iframeDocument.body) {
-            if (current.tagName === "A") {
+          while (current) {
+            console.log(
+              "[handleCustomNavigation] Checking element:",
+              current.tagName,
+              current
+            );
+            if (current.tagName?.toUpperCase() === "A") {
+              console.log("[handleCustomNavigation] Found anchor!", current);
               return current as HTMLAnchorElement;
             }
+            if (current === iframeDocument.body) {
+              console.log("[handleCustomNavigation] Reached body, stopping");
+              break;
+            }
             const parent: Node | null = current.parentNode;
-            if (parent instanceof ShadowRoot) {
-              current = parent.host as HTMLElement;
-            } else if (parent instanceof HTMLElement) {
-              current = parent;
+            console.log(
+              "[handleCustomNavigation] Parent node:",
+              parent,
+              "nodeType:",
+              parent?.nodeType
+            );
+            // Use nodeType to check - works across iframe boundaries
+            // nodeType 1 = Element, nodeType 11 = DocumentFragment (including ShadowRoot)
+            if (parent && parent.nodeType === 11) {
+              // ShadowRoot
+              current = (parent as ShadowRoot).host as HTMLElement;
+            } else if (parent && parent.nodeType === 1) {
+              // Element node
+              current = parent as HTMLElement;
             } else {
+              console.log(
+                "[handleCustomNavigation] Parent is not an element node, breaking"
+              );
               break;
             }
           }
@@ -376,6 +429,7 @@ export const Preview = ({ isNew }: { isNew: boolean }) => {
         };
 
         const anchorElement = findClosestAnchor(actualTarget);
+        console.log("[handleCustomNavigation] Anchor element:", anchorElement);
         if (anchorElement) {
           let href = anchorElement.getAttribute("href");
           if (href) {

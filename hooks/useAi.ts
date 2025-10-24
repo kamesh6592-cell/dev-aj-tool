@@ -213,7 +213,7 @@ export const useAi = (onScrollToBottom?: () => void) => {
             const newPages = formatPages(contentResponse, false);
             let projectName = contentResponse.match(/<<<<<<< PROJECT_NAME_START\s*([\s\S]*?)\s*>>>>>>> PROJECT_NAME_END/)?.[1]?.trim();
             if (!projectName) {
-              projectName = prompt.substring(0, 40).replace(/[^a-zA-Z0-9]/g, "-").slice(0, 40);
+              projectName = prompt.substring(0, 40).replace(/[^a-zA-Z0-9]/g, "-").slice(0, 40) + "-" + Math.random().toString(36).substring(2, 15);
             }
             setPages(newPages);
             setLastSavedPages([...newPages]);
@@ -373,7 +373,6 @@ export const useAi = (onScrollToBottom?: () => void) => {
       }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.log(error)
       setIsAiWorking(false);
       toast.error(error.message);
       if (error.openLogin) {
