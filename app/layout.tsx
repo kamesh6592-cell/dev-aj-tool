@@ -114,7 +114,7 @@ export default async function RootLayout({
           data-domain="deepsite.hf.co"
           src="https://plausible.io/js/script.js"
         />
-        {/* <DomainRedirect /> */}
+        <DomainRedirect />
         <IframeDetector />
         <Toaster richColors position="bottom-center" />
         <TanstackContext>
