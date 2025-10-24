@@ -23,6 +23,8 @@ export const Context = () => {
       return <Braces className={size} />;
     } else if (filePath.endsWith(".js")) {
       return <FileCode className={size} />;
+    } else if (filePath.endsWith(".json")) {
+      return <Braces className={size} />;
     } else {
       return <FileText className={size} />;
     }
@@ -52,6 +54,8 @@ export const Context = () => {
               selectedFile && selectedFile.endsWith(".html"),
             "!bg-amber-500/10 !border-amber-500/30 !text-amber-400":
               selectedFile && selectedFile.endsWith(".js"),
+            "!bg-yellow-500/10 !border-yellow-500/30 !text-yellow-400":
+              selectedFile && selectedFile.endsWith(".json"),
           })}
           disabled={
             globalAiLoading || globalEditorLoading || pages.length === 0

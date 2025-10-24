@@ -108,7 +108,7 @@ export async function GET(
     const allowedFilesExtensions = ["jpg", "jpeg", "png", "gif", "svg", "webp", "avif", "heic", "heif", "ico", "bmp", "tiff", "tif", "mp4", "webm", "ogg", "avi", "mov", "mp3", "wav", "ogg", "aac", "m4a"];
     
     for await (const fileInfo of listFiles({repo, accessToken: user.token as string})) {
-      if (fileInfo.path.endsWith(".html") || fileInfo.path.endsWith(".css") || fileInfo.path.endsWith(".js")) {
+      if (fileInfo.path.endsWith(".html") || fileInfo.path.endsWith(".css") || fileInfo.path.endsWith(".js") || fileInfo.path.endsWith(".json")) {
         const blob = await downloadFile({ repo, accessToken: user.token as string, path: fileInfo.path, raw: true });
         const html = await blob?.text();
         if (!html) {

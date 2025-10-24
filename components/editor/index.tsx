@@ -68,6 +68,7 @@ export const AppEditor = ({
     const path = currentPageData.path;
     if (path.endsWith(".css")) return "css";
     if (path.endsWith(".js")) return "javascript";
+    if (path.endsWith(".json")) return "json";
     return "html";
   }, [currentPageData.path]);
 
@@ -76,6 +77,7 @@ export const AppEditor = ({
     if (editorLanguage === "css") return "CSS copied to clipboard!";
     if (editorLanguage === "javascript")
       return "JavaScript copied to clipboard!";
+    if (editorLanguage === "json") return "JSON copied to clipboard!";
     return "HTML copied to clipboard!";
   }, [editorLanguage]);
 

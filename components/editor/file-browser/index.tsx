@@ -7,6 +7,7 @@ import {
   Folder,
   ChevronRight,
   ChevronDown,
+  FileJson,
 } from "lucide-react";
 import classNames from "classnames";
 
@@ -197,27 +198,7 @@ export function FileBrowser() {
           </svg>
         );
       case "json":
-        return (
-          <svg className="size-4 shrink-0" viewBox="0 0 32 32" fill="none">
-            <rect width="32" height="32" rx="2" fill="#F7DF1E" />
-            <path
-              d="M16 2L4 8v16l12 6 12-6V8L16 2zm8.8 20.4l-8.8 4.4-8.8-4.4V9.6l8.8-4.4 8.8 4.4v12.8z"
-              fill="#000"
-              opacity="0.15"
-            />
-            <text
-              x="50%"
-              y="50%"
-              dominantBaseline="middle"
-              textAnchor="middle"
-              fill="#000"
-              fontSize="14"
-              fontWeight="600"
-            >
-              {}
-            </text>
-          </svg>
-        );
+        return <FileJson className="size-4 shrink-0 text-amber-400" />;
       default:
         return <FileCode2 className="size-4 shrink-0 text-neutral-400" />;
     }
@@ -249,7 +230,7 @@ export function FileBrowser() {
       case "json":
         return {
           name: "JSON",
-          color: "bg-yellow-500/20 border-yellow-500/30 text-yellow-400",
+          color: "bg-amber-500/20 border-amber-500/30 text-amber-400",
         };
       default:
         return {
@@ -456,6 +437,13 @@ export function FileBrowser() {
                       <div className="size-2 rounded-full bg-yellow-400" />
                       <span>
                         JS: {pages.filter((p) => p.path.endsWith(".js")).length}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 text-neutral-500">
+                      <div className="size-2 rounded-full bg-yellow-600" />
+                      <span>
+                        JSON:{" "}
+                        {pages.filter((p) => p.path.endsWith(".json")).length}
                       </span>
                     </div>
                   </div>

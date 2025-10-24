@@ -78,6 +78,9 @@ export const Preview = ({ isNew }: { isNew: boolean }) => {
       const jsFiles = pages.filter(
         (p) => p.path.endsWith(".js") && p.path !== previewPageData?.path
       );
+      const jsonFiles = pages.filter(
+        (p) => p.path.endsWith(".json") && p.path !== previewPageData?.path
+      );
 
       let modifiedHtml = html;
 
@@ -136,6 +139,42 @@ export const Preview = ({ isNew }: { isNew: boolean }) => {
         }
 
         jsFiles.forEach((file) => {
+          const escapedPath = file.path.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+          modifiedHtml = modifiedHtml.replace(
+            new RegExp(
+              `<script\\s+[^>]*src=["'][\\.\/]*${escapedPath}["'][^>]*><\\/script>`,
+              "gi"
+            ),
+            ""
+          );
+        });
+      }
+
+      // Inject all JSON files as script tags with type="application/json"
+      if (jsonFiles.length > 0) {
+        const allJsonContent = jsonFiles
+          .map(
+            (file) =>
+              `<script type="application/json" data-injected-from="${
+                file.path
+              }" id="${file.path.replace(/[^a-zA-Z0-9]/g, "-")}">\n${
+                file.html
+              }\n</script>`
+          )
+          .join("\n");
+
+        if (modifiedHtml.includes("</body>")) {
+          modifiedHtml = modifiedHtml.replace(
+            "</body>",
+            `${allJsonContent}\n</body>`
+          );
+        } else if (modifiedHtml.includes("<body>")) {
+          modifiedHtml = modifiedHtml + allJsonContent;
+        } else {
+          modifiedHtml = modifiedHtml + "\n" + allJsonContent;
+        }
+
+        jsonFiles.forEach((file) => {
           const escapedPath = file.path.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
           modifiedHtml = modifiedHtml.replace(
             new RegExp(
