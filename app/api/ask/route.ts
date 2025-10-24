@@ -410,6 +410,8 @@ export async function PUT(request: NextRequest) {
       // Clear timeout if successful
       if (timeoutId) clearTimeout(timeoutId);
     } catch (timeoutError: any) {
+      console.log("++TIMEOUT ERROR++", timeoutError)
+      console.log("++TIMEOUT ERROR MESSAGE++", timeoutError.message)
       // Clear timeout on error
       if (timeoutId) clearTimeout(timeoutId);
       
@@ -687,6 +689,8 @@ This project was created with [DeepSite](https://huggingface.co/deepsite).
       );
     }
   } catch (error: any) {
+    console.log("++ERROR++", error)
+    console.log("++ERROR MESSAGE++", error.message)
     if (error.message?.includes('timeout') || error.message?.includes('Request timeout')) {
       return NextResponse.json(
         {

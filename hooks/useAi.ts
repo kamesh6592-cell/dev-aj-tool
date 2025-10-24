@@ -324,7 +324,6 @@ export const useAi = (onScrollToBottom?: () => void) => {
             setIsAiWorking(false);
             return { error: "pro_required" };
           } else {
-            toast.error(res.message);
             setIsAiWorking(false);
             return { error: "api_error", message: res.message };
           }
@@ -374,6 +373,7 @@ export const useAi = (onScrollToBottom?: () => void) => {
       }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
+      console.log(error)
       setIsAiWorking(false);
       toast.error(error.message);
       if (error.openLogin) {
