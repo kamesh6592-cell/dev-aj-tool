@@ -14,7 +14,6 @@ import TanstackContext from "@/components/contexts/tanstack-query-context";
 import { LoginProvider } from "@/components/contexts/login-context";
 import { ProProvider } from "@/components/contexts/pro-context";
 import { generateSEO, generateStructuredData } from "@/lib/seo";
-import DomainRedirect from "@/components/domain-redirect";
 
 const inter = Inter({
   variable: "--font-inter-sans",
@@ -114,7 +113,6 @@ export default async function RootLayout({
           data-domain="deepsite.hf.co"
           src="https://plausible.io/js/script.js"
         />
-        <DomainRedirect />
         <IframeDetector />
         <Toaster richColors position="bottom-center" />
         <TanstackContext>
