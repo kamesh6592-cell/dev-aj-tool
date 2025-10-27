@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { RepoDesignation, listFiles, spaceInfo, uploadFiles, deleteFiles } from "@huggingface/hub";
+import { RepoDesignation, listFiles, spaceInfo, uploadFiles, deleteFiles, downloadFile } from "@huggingface/hub";
 
 import { isAuthenticated } from "@/lib/auth";
 import { Page } from "@/types";
@@ -49,13 +49,13 @@ export async function POST(
       );
     }
 
-    // Fetch files from the specific commit
     const files: File[] = [];
     const pages: Page[] = [];
+    const mediaFiles: string[] = [];
     const allowedExtensions = ["html", "md", "css", "js", "json", "txt"];
+    const allowedFilesExtensions = ["jpg", "jpeg", "png", "gif", "svg", "webp", "avif", "heic", "heif", "ico", "bmp", "tiff", "tif", "mp4", "webm", "ogg", "avi", "mov", "mp3", "wav", "ogg", "aac", "m4a"];
     const commitFilePaths: Set<string> = new Set();
     
-    // Get all files from the specific commit
     for await (const fileInfo of listFiles({
       repo,
       accessToken: user.token as string,
@@ -63,26 +63,24 @@ export async function POST(
     })) {
       const fileExtension = fileInfo.path.split('.').pop()?.toLowerCase();
       
-      if (allowedExtensions.includes(fileExtension || "")) {
+      if (fileInfo.path.endsWith(".html") || fileInfo.path.endsWith(".css") || fileInfo.path.endsWith(".js") || fileInfo.path.endsWith(".json")) {
         commitFilePaths.add(fileInfo.path);
         
-        // Fetch the file content from the specific commit
-        const response = await fetch(
-          `https://huggingface.co/spaces/${namespace}/${repoId}/raw/${commitId}/${fileInfo.path}`
-        );
+        const blob = await downloadFile({ 
+          repo, 
+          accessToken: user.token as string, 
+          path: fileInfo.path, 
+          revision: commitId,
+          raw: true 
+        });
+        const content = await blob?.text();
         
-        if (response.ok) {
-          const content = await response.text();
+        if (content) {
           let mimeType = "text/plain";
           
           switch (fileExtension) {
             case "html":
               mimeType = "text/html";
-              // Add HTML files to pages array for client-side setPages
-              pages.push({
-                path: fileInfo.path,
-                html: content,
-              });
               break;
             case "css":
               mimeType = "text/css";
@@ -93,18 +91,62 @@ export async function POST(
             case "json":
               mimeType = "application/json";
               break;
-            case "md":
-              mimeType = "text/markdown";
-              break;
+          }
+          
+          if (fileInfo.path === "index.html") {
+            pages.unshift({
+              path: fileInfo.path,
+              html: content,
+            });
+          } else {
+            pages.push({
+              path: fileInfo.path,
+              html: content,
+            });
           }
           
           const file = new File([content], fileInfo.path, { type: mimeType });
           files.push(file);
         }
       }
+      else if (fileInfo.type === "directory" && (["videos", "images", "audio"].includes(fileInfo.path) || fileInfo.path === "components")) {
+        for await (const subFileInfo of listFiles({
+          repo,
+          accessToken: user.token as string,
+          revision: commitId,
+          path: fileInfo.path,
+        })) {
+          if (subFileInfo.path.includes("components")) {
+            commitFilePaths.add(subFileInfo.path);
+            const blob = await downloadFile({ 
+              repo, 
+              accessToken: user.token as string, 
+              path: subFileInfo.path, 
+              revision: commitId,
+              raw: true 
+            });
+            const content = await blob?.text();
+            
+            if (content) {
+              pages.push({
+                path: subFileInfo.path,
+                html: content,
+              });
+              
+              const file = new File([content], subFileInfo.path, { type: "text/html" });
+              files.push(file);
+            }
+          } else if (allowedFilesExtensions.includes(subFileInfo.path.split(".").pop() || "")) {
+            commitFilePaths.add(subFileInfo.path);
+            mediaFiles.push(`https://huggingface.co/spaces/${namespace}/${repoId}/resolve/main/${subFileInfo.path}`);
+          }
+        }
+      }
+      else if (allowedExtensions.includes(fileExtension || "")) {
+        commitFilePaths.add(fileInfo.path);
+      }
     }
 
-    // Get files currently in main branch to identify files to delete
     const mainBranchFilePaths: Set<string> = new Set();
     for await (const fileInfo of listFiles({
       repo,
@@ -118,7 +160,6 @@ export async function POST(
       }
     }
 
-    // Identify files to delete (exist in main but not in commit)
     const filesToDelete: string[] = [];
     for (const mainFilePath of mainBranchFilePaths) {
       if (!commitFilePaths.has(mainFilePath)) {
@@ -133,7 +174,6 @@ export async function POST(
       );
     }
 
-    // Delete files that exist in main but not in the commit being promoted
     if (filesToDelete.length > 0) {
       await deleteFiles({
         repo,
@@ -144,7 +184,6 @@ export async function POST(
       });
     }
 
-    // Upload the files to the main branch with a promotion commit message
     if (files.length > 0) {
       await uploadFiles({
         repo,
@@ -161,6 +200,7 @@ export async function POST(
         message: "Version promoted successfully",
         promotedCommit: commitId,
         pages: pages,
+        files: mediaFiles,
       },
       { status: 200 }
     );

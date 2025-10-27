@@ -30,6 +30,7 @@ export const Preview = ({ isNew }: { isNew: boolean }) => {
     setCurrentPage,
     previewPage,
     setPreviewPage,
+    setLastSavedPages,
   } = useEditor();
   const {
     isEditableModeEnabled,
@@ -300,6 +301,7 @@ export const Preview = ({ isNew }: { isNew: boolean }) => {
           setCurrentCommit(null);
           setPages(res.data.pages);
           setCurrentPage(res.data.pages[0].path);
+          setLastSavedPages(res.data.pages);
           setPreviewPage(res.data.pages[0].path);
           toast.success("Version promoted successfully");
         }
