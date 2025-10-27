@@ -15,6 +15,7 @@ import { defaultHTML } from "@/lib/consts";
 import { HistoryNotification } from "../history-notification";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
+import { RefreshCcw, TriangleAlert } from "lucide-react";
 
 export const Preview = ({ isNew }: { isNew: boolean }) => {
   const {
@@ -31,6 +32,7 @@ export const Preview = ({ isNew }: { isNew: boolean }) => {
     previewPage,
     setPreviewPage,
     setLastSavedPages,
+    hasUnsavedChanges,
   } = useEditor();
   const {
     isEditableModeEnabled,
@@ -49,6 +51,7 @@ export const Preview = ({ isNew }: { isNew: boolean }) => {
   const [stableHtml, setStableHtml] = useState<string>("");
   const [throttledHtml, setThrottledHtml] = useState<string>("");
   const lastUpdateTimeRef = useRef<number>(0);
+  const [iframeKey, setIframeKey] = useState(0);
 
   useEffect(() => {
     if (!previewPage && pages.length > 0) {
@@ -290,6 +293,10 @@ export const Preview = ({ isNew }: { isNew: boolean }) => {
     };
   }, [isEditableModeEnabled, stableHtml, throttledHtml, previewPage]);
 
+  const refreshIframe = () => {
+    setIframeKey((prev) => prev + 1);
+  };
+
   const promoteVersion = async () => {
     setIsPromotingVersion(true);
     await api
@@ -530,7 +537,26 @@ export const Preview = ({ isNew }: { isNew: boolean }) => {
         </div>
       ) : (
         <>
+          {!isNew && hasUnsavedChanges && !currentCommit && (
+            <div className="top-0 left-0 right-0 z-20 bg-amber-500/90 backdrop-blur-sm border-b border-amber-600 px-4 py-2 flex items-center justify-between gap-3 text-sm w-full">
+              <div className="flex items-center gap-2 flex-1">
+                <TriangleAlert className="size-4 text-amber-900 flex-shrink-0" />
+                <span className="text-amber-900 font-medium">
+                  Preview with unsaved changes. If you experience redirection
+                  errors, try refreshing the preview.
+                </span>
+              </div>
+              <button
+                onClick={refreshIframe}
+                className="px-3 py-1 bg-amber-900 hover:bg-amber-800 text-amber-50 rounded-md font-medium transition-colors whitespace-nowrap flex items-center gap-1.5"
+              >
+                <RefreshCcw className="size-4 text-amber-50 flex-shrink-0" />
+                Refresh
+              </button>
+            </div>
+          )}
           <iframe
+            key={iframeKey}
             id="preview-iframe"
             ref={iframeRef}
             className={classNames(
@@ -546,31 +572,32 @@ export const Preview = ({ isNew }: { isNew: boolean }) => {
                     "/",
                     "-"
                   )}--rev-${currentCommit.slice(0, 7)}.static.hf.space`
+                : !isNew && !hasUnsavedChanges && project?.space_id
+                ? `https://${project.space_id.replaceAll(
+                    "/",
+                    "-"
+                  )}.static.hf.space`
                 : undefined
             }
             srcDoc={
-              !currentCommit
+              !currentCommit && (isNew || hasUnsavedChanges)
                 ? isNew
                   ? throttledHtml || defaultHTML
                   : stableHtml
                 : undefined
             }
-            onLoad={
-              !currentCommit
-                ? () => {
-                    if (iframeRef?.current?.contentWindow?.document?.body) {
-                      iframeRef.current.contentWindow.document.body.scrollIntoView(
-                        {
-                          block: isAiWorking ? "end" : "start",
-                          inline: "nearest",
-                          behavior: isAiWorking ? "instant" : "smooth",
-                        }
-                      );
-                    }
-                    setupIframeListeners();
-                  }
-                : undefined
-            }
+            onLoad={() => {
+              if (!currentCommit && (isNew || hasUnsavedChanges)) {
+                if (iframeRef?.current?.contentWindow?.document?.body) {
+                  iframeRef.current.contentWindow.document.body.scrollIntoView({
+                    block: isAiWorking ? "end" : "start",
+                    inline: "nearest",
+                    behavior: isAiWorking ? "instant" : "smooth",
+                  });
+                }
+                setupIframeListeners();
+              }
+            }}
             sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-modals allow-forms"
             allow="accelerometer; ambient-light-sensor; autoplay; battery; camera; clipboard-read; clipboard-write; display-capture; document-domain; encrypted-media; fullscreen; geolocation; gyroscope; layout-animations; legacy-image-formats; magnetometer; microphone; midi; oversized-images; payment; picture-in-picture; publickey-credentials-get; serial; sync-xhr; usb; vr ; wake-lock; xr-spatial-tracking"
           />
