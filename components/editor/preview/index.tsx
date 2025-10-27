@@ -558,13 +558,12 @@ export const Preview = ({ isNew }: { isNew: boolean }) => {
           {!isNew &&
             !hasUnsavedChanges &&
             !currentCommit &&
-            !project?.space_id && (
+            project?.private && (
               <div className="top-0 left-0 right-0 z-20 bg-blue-500/90 backdrop-blur-sm border-b border-blue-600 px-4 py-2 flex items-center justify-between gap-3 text-sm w-full">
                 <div className="flex items-center gap-2 flex-1">
                   <TriangleAlert className="size-4 text-blue-900 flex-shrink-0" />
                   <span className="text-blue-900 font-medium">
-                    Private project preview. This project is not deployed
-                    publicly.
+                    Private project preview. Some features may not work.
                   </span>
                 </div>
                 <button
