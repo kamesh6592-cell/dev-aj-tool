@@ -2,6 +2,8 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, PT_Sans } from "next/font/google";
 import Script from "next/script";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 import "@/assets/globals.css";
 import { Toaster } from "@/components/ui/sonner";
@@ -74,6 +76,24 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Domain redirect check
+  const headersList = await headers();
+  const forwardedHost = headersList.get("x-forwarded-host");
+  const host = headersList.get("host");
+  const hostname = (forwardedHost || host || "").split(":")[0];
+
+  const isLocalDev =
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname.startsWith("192.168.");
+  const isHuggingFace =
+    hostname === "huggingface.co" || hostname.endsWith(".huggingface.co");
+
+  if (!isHuggingFace && !isLocalDev) {
+    const pathname = headersList.get("x-invoke-path") || "/deepsite";
+    redirect(`https://huggingface.co${pathname}`);
+  }
+
   // const data = await getMe();
 
   // Generate structured data
