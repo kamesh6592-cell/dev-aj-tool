@@ -555,6 +555,27 @@ export const Preview = ({ isNew }: { isNew: boolean }) => {
               </button>
             </div>
           )}
+          {!isNew &&
+            !hasUnsavedChanges &&
+            !currentCommit &&
+            !project?.space_id && (
+              <div className="top-0 left-0 right-0 z-20 bg-blue-500/90 backdrop-blur-sm border-b border-blue-600 px-4 py-2 flex items-center justify-between gap-3 text-sm w-full">
+                <div className="flex items-center gap-2 flex-1">
+                  <TriangleAlert className="size-4 text-blue-900 flex-shrink-0" />
+                  <span className="text-blue-900 font-medium">
+                    Private project preview. This project is not deployed
+                    publicly.
+                  </span>
+                </div>
+                <button
+                  onClick={refreshIframe}
+                  className="px-3 py-1 bg-blue-900 hover:bg-blue-800 text-blue-50 rounded-md font-medium transition-colors whitespace-nowrap flex items-center gap-1.5"
+                >
+                  <RefreshCcw className="size-4 text-blue-50 flex-shrink-0" />
+                  Refresh
+                </button>
+              </div>
+            )}
           <iframe
             key={iframeKey}
             id="preview-iframe"
@@ -580,14 +601,17 @@ export const Preview = ({ isNew }: { isNew: boolean }) => {
                 : undefined
             }
             srcDoc={
-              !currentCommit && (isNew || hasUnsavedChanges)
+              !currentCommit && (isNew || hasUnsavedChanges || project?.private)
                 ? isNew
                   ? throttledHtml || defaultHTML
                   : stableHtml
                 : undefined
             }
             onLoad={() => {
-              if (!currentCommit && (isNew || hasUnsavedChanges)) {
+              if (
+                !currentCommit &&
+                (isNew || hasUnsavedChanges || project?.private)
+              ) {
                 if (iframeRef?.current?.contentWindow?.document?.body) {
                   iframeRef.current.contentWindow.document.body.scrollIntoView({
                     block: isAiWorking ? "end" : "start",
