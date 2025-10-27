@@ -4,12 +4,11 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const host = request.headers.get("host") || "";
 
-  // Check if we're not on hf.co or huggingface.co
-  const isHfCo = host === "hf.co" || host.startsWith("hf.co:");
-  const isHuggingFaceCo = host === "huggingface.co" || host.startsWith("huggingface.co:");
+  const isLocalhost = host.startsWith("localhost") || host.startsWith("127.0.0.1");
+  const isCorrectDomain = host === "huggingface.co" || host.startsWith("huggingface.co:");
 
-  if (!isHfCo && !isHuggingFaceCo) {
-    // Server-side redirect to the correct URL
+  console.log("++ DOMAIN CHECK ++", host)
+  if (!isCorrectDomain && !isLocalhost) {
     return NextResponse.redirect("https://huggingface.co/deepsite", 301);
   }
 

@@ -1,13 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Metadata, Viewport } from "next";
 import { Inter, PT_Sans } from "next/font/google";
-import { cookies } from "next/headers";
 import Script from "next/script";
 
 import "@/assets/globals.css";
 import { Toaster } from "@/components/ui/sonner";
-import MY_TOKEN_KEY from "@/lib/get-cookie-name";
-import { apiServer } from "@/lib/api";
 import IframeDetector from "@/components/iframe-detector";
 import AppContext from "@/components/contexts/app-context";
 import TanstackContext from "@/components/contexts/tanstack-query-context";
