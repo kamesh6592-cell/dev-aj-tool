@@ -7,11 +7,12 @@ import { InferenceClient } from "@huggingface/inference";
 import { MODELS } from "@/lib/providers";
 import {
   FOLLOW_UP_SYSTEM_PROMPT,
+  FOLLOW_UP_SYSTEM_PROMPT_LIGHT,
   INITIAL_SYSTEM_PROMPT,
+  INITIAL_SYSTEM_PROMPT_LIGHT,
   MAX_REQUESTS_PER_IP,
   PROMPT_FOR_PROJECT_NAME,
 } from "@/lib/prompts";
-import { calculateMaxTokens, estimateInputTokens, getProviderSpecificConfig } from "@/lib/max-tokens";
 import MY_TOKEN_KEY from "@/lib/get-cookie-name";
 import { Page } from "@/types";
 import { isAuthenticated } from "@/lib/auth";
@@ -100,21 +101,20 @@ export async function POST(request: NextRequest) {
     });
 
     (async () => {
-      // let completeResponse = "";
       try {
         const client = new InferenceClient(token);
         
-        const systemPrompt = INITIAL_SYSTEM_PROMPT;
+        // Use light prompt for MiniMax model
+        const systemPrompt = selectedModel.value.includes('MiniMax') 
+          ? INITIAL_SYSTEM_PROMPT_LIGHT 
+          : INITIAL_SYSTEM_PROMPT;
         
         const userPrompt = rewrittenPrompt;
-        const estimatedInputTokens = estimateInputTokens(systemPrompt, userPrompt);
-        const dynamicMaxTokens = calculateMaxTokens(selectedProvider, estimatedInputTokens, true);
-        const providerConfig = getProviderSpecificConfig(selectedProvider, dynamicMaxTokens);
         
         const chatCompletion = client.chatCompletionStream(
           {
             model: selectedModel.value,
-            provider: selectedProvider.provider,
+            provider: selectedProvider,
             messages: [
               {
                 role: "system",
@@ -127,7 +127,6 @@ export async function POST(request: NextRequest) {
 3. I want to use the following theme: ${enhancedSettings.theme} mode.` : "")
               },
             ],
-            ...providerConfig,
           },
           billTo ? { billTo } : {}
         );
@@ -283,7 +282,10 @@ export async function PUT(request: NextRequest) {
       try {
         const client = new InferenceClient(token);
 
-        const systemPrompt = FOLLOW_UP_SYSTEM_PROMPT + (isNew ? PROMPT_FOR_PROJECT_NAME : "");
+        const basePrompt = selectedModel.value.includes('MiniMax') 
+          ? FOLLOW_UP_SYSTEM_PROMPT_LIGHT 
+          : FOLLOW_UP_SYSTEM_PROMPT;
+        const systemPrompt = basePrompt + (isNew ? PROMPT_FOR_PROJECT_NAME : "");
         const userContext = "You are modifying the HTML file based on the user's request.";
 
         const allPages = pages || [];
@@ -296,14 +298,10 @@ export async function PUT(request: NextRequest) {
             : ""
           }. Current pages (${allPages.length} total): ${pagesContext}. ${files?.length > 0 ? `Available images: ${files?.map((f: string) => f).join(', ')}.` : ""}`;
 
-        const estimatedInputTokens = estimateInputTokens(systemPrompt, prompt, userContext + assistantContext);
-        const dynamicMaxTokens = calculateMaxTokens(selectedProvider, estimatedInputTokens, false);
-        const providerConfig = getProviderSpecificConfig(selectedProvider, dynamicMaxTokens);
-
         const chatCompletion = client.chatCompletionStream(
           {
             model: selectedModel.value,
-            provider: selectedProvider.provider,
+            provider: selectedProvider,
             messages: [
               {
                 role: "system",
@@ -322,7 +320,6 @@ export async function PUT(request: NextRequest) {
                 content: prompt,
               },
             ],
-            ...providerConfig,
           },
           billTo ? { billTo } : {}
         );
