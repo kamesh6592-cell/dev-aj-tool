@@ -139,6 +139,7 @@ export async function POST(request: NextRequest) {
           }
 
           const chunk = value.choices[0]?.delta?.content;
+          console.log(chunk);
           if (chunk) {
             await writer.write(encoder.encode(chunk));
           }

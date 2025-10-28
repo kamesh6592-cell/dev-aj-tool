@@ -18,6 +18,7 @@ models:
   - moonshotai/Kimi-K2-Instruct
   - moonshotai/Kimi-K2-Instruct-0905
   - zai-org/GLM-4.6
+  - MiniMaxAI/MiniMax-M2
 ---
 
 # DeepSite 🐳

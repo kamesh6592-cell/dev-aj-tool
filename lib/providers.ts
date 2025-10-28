@@ -2,6 +2,7 @@ import DeepSeekLogo from "@/assets/deepseek.svg";
 import QwenLogo from "@/assets/qwen.svg";
 import KimiLogo from "@/assets/kimi.svg";
 import ZaiLogo from "@/assets/zai.svg";
+import MiniMaxLogo from "@/assets/minimax.svg";
 
 export const PROVIDERS = {
   "fireworks-ai": {
@@ -69,7 +70,6 @@ export const MODELS = [
     providers: ["novita"],
     autoProvider: "novita",
     logo: DeepSeekLogo,
-    isNew: true,
     companyName: "DeepSeek",
   },
   {
@@ -101,5 +101,12 @@ export const MODELS = [
     label: "GLM-4.6",
     logo: ZaiLogo,
     companyName: "Z.ai",
+  },
+  {
+    value: "MiniMaxAI/MiniMax-M2",
+    label: "MiniMax M2",
+    logo: MiniMaxLogo,
+    companyName: "MiniMax",
+    isNew: true,
   }
 ];

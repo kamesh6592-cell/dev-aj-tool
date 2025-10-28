@@ -20,7 +20,7 @@ import {
 import { useMemo, useState, useEffect } from "react";
 import { useUpdateEffect } from "react-use";
 import Image from "next/image";
-import { Brain, BrainIcon, CheckCheck, ChevronDown } from "lucide-react";
+import { BrainIcon, CheckCheck, ChevronDown } from "lucide-react";
 import { useAi } from "@/hooks/useAi";
 import { getProviders } from "@/lib/get-providers";
 import Loading from "@/components/loading";
