@@ -127,6 +127,9 @@ export async function POST(request: NextRequest) {
 3. I want to use the following theme: ${enhancedSettings.theme} mode.` : "")
               },
             ],
+            ...(selectedModel.top_k ? { top_k: selectedModel.top_k } : {}),
+            ...(selectedModel.temperature ? { temperature: selectedModel.temperature } : {}),
+            ...(selectedModel.top_p ? { top_p: selectedModel.top_p } : {}),
           },
           billTo ? { billTo } : {}
         );
@@ -320,6 +323,9 @@ export async function PUT(request: NextRequest) {
                 content: prompt,
               },
             ],
+            ...(selectedModel.top_k ? { top_k: selectedModel.top_k } : {}),
+            ...(selectedModel.temperature ? { temperature: selectedModel.temperature } : {}),
+            ...(selectedModel.top_p ? { top_p: selectedModel.top_p } : {}),
           },
           billTo ? { billTo } : {}
         );

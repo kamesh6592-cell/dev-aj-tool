@@ -108,5 +108,8 @@ export const MODELS = [
     logo: MiniMaxLogo,
     companyName: "MiniMax",
     isNew: true,
+    top_k: 40,
+    temperature: 1.0,
+    top_p: 0.95,
   }
 ];
