@@ -93,7 +93,7 @@ export function Header({ isNew }: { isNew: boolean }) {
             <Button
               size="xs"
               variant="bordered"
-              className="!border-indigo-500/20 !text-indigo-500 !bg-indigo-500/10 shadow-lg shadow-indigo-500/10 hover:shadow-indigo-500/20 transition-shadow duration-300"
+              className="!border-indigo-500 !text-white !bg-indigo-500"
             >
               <DiscordIcon className="size-3 mr-0.5" />
               Discord Community
