@@ -83,7 +83,7 @@ export const AppEditor = ({
 
   return (
     <section className="h-screen w-full bg-neutral-950 flex flex-col">
-      <Header />
+      <Header isNew={isNew} />
       <main className="bg-neutral-950 flex-1 max-lg:flex-col flex w-full relative">
         <div
           ref={editor}

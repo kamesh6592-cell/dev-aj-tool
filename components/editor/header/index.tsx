@@ -23,8 +23,10 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import DiscordLogo from "@/assets/discord.svg";
+import { DiscordIcon } from "@/components/icons/discord";
 
-export function Header() {
+export function Header({ isNew }: { isNew: boolean }) {
   const { project } = useEditor();
   const { user, openLoginWindow } = useUser();
   return (
@@ -59,30 +61,42 @@ export function Header() {
       <div className="lg:w-full px-2 lg:px-3 py-2 flex items-center justify-end lg:justify-between lg:border-l lg:border-neutral-800">
         <div className="font-mono text-muted-foreground flex items-center gap-2">
           <SwitchDevice />
-          <Button
-            size="xs"
-            variant="bordered"
-            className="max-lg:hidden"
-            onClick={() => {
-              const iframe = document.getElementById(
-                "preview-iframe"
-              ) as HTMLIFrameElement;
-              if (iframe) {
-                iframe.src = iframe.src;
-              }
-            }}
-          >
-            <RefreshCcw className="size-3 mr-0.5" />
-            Refresh Preview
-          </Button>
+          {isNew && (
+            <Button
+              size="xs"
+              variant="bordered"
+              className="max-lg:hidden"
+              onClick={() => {
+                const iframe = document.getElementById(
+                  "preview-iframe"
+                ) as HTMLIFrameElement;
+                if (iframe) {
+                  iframe.src = iframe.src;
+                }
+              }}
+            >
+              <RefreshCcw className="size-3 mr-0.5" />
+              Refresh Preview
+            </Button>
+          )}
           <Link
-            href="https://huggingface.co/spaces/enzostvs/deepsite/discussions/427"
+            href="https://discord.gg/KpanwM3vXa"
             target="_blank"
             className="max-lg:hidden"
           >
             <Button size="xs" variant="bordered">
               <HelpCircle className="size-3 mr-0.5" />
               Help
+            </Button>
+          </Link>
+          <Link href="https://discord.gg/KpanwM3vXa" target="_blank">
+            <Button
+              size="xs"
+              variant="bordered"
+              className="!border-indigo-500/20 !text-indigo-500 !bg-indigo-500/10 shadow-lg shadow-indigo-500/10 hover:shadow-indigo-500/20 transition-shadow duration-300"
+            >
+              <DiscordIcon className="size-3 mr-0.5" />
+              Discord Community
             </Button>
           </Link>
         </div>
