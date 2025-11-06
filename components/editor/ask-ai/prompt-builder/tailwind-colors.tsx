@@ -26,7 +26,7 @@ export const TailwindColors = ({
   return (
     <div
       ref={ref}
-      className="flex items-center justify-start gap-3 overflow-x-auto px-5 scrollbar-hide"
+      className="flex items-center justify-start gap-3 overflow-x-auto px-5 transparent-scroll"
     >
       {TAILWIND_COLORS.map((color) => (
         <div

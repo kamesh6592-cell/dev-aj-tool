@@ -16,7 +16,7 @@ export const ContentModal = ({
 }) => {
   const [collapsed, setCollapsed] = useState(["colors", "theme"]);
   return (
-    <main className="overflow-x-hidden max-h-[50dvh] overflow-y-auto">
+    <main className="overflow-x-hidden max-h-[50dvh] overflow-y-auto transparent-scroll">
       <section className="w-full border-b border-neutral-800/80 px-6 py-3.5 sticky top-0 bg-neutral-900 z-10">
         <div className="flex items-center justify-between gap-3">
           <p className="text-base font-semibold text-neutral-200">
