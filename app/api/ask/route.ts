@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
     ? authHeaders.get("x-forwarded-for")?.split(",")[1].trim()
     : authHeaders.get("x-forwarded-for");
 
-  if (!token) {
+  if (!token || token === "null" || token === "") {
     ipAddresses.set(ip, (ipAddresses.get(ip) || 0) + 1);
     if (ipAddresses.get(ip) > MAX_REQUESTS_PER_IP) {
       return NextResponse.json(
@@ -103,7 +103,6 @@ export async function POST(request: NextRequest) {
       try {
         const client = new InferenceClient(token);
         
-        // Use light prompt for MiniMax model
         const systemPrompt = selectedModel.value.includes('MiniMax') 
           ? INITIAL_SYSTEM_PROMPT_LIGHT 
           : INITIAL_SYSTEM_PROMPT;
@@ -246,7 +245,7 @@ export async function PUT(request: NextRequest) {
     ? authHeaders.get("x-forwarded-for")?.split(",")[1].trim()
     : authHeaders.get("x-forwarded-for");
 
-  if (!token) {
+  if (!token || token === "null" || token === "") {
     ipAddresses.set(ip, (ipAddresses.get(ip) || 0) + 1);
     if (ipAddresses.get(ip) > MAX_REQUESTS_PER_IP) {
       return NextResponse.json(
