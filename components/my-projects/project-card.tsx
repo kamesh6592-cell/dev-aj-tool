@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ProjectType } from "@/types";
 import { toast } from "sonner";
-import { api } from "@/lib/api";
+import { useUser } from "@/hooks/useUser";
 
 // from-red-500 to-red-500
 // from-yellow-500 to-yellow-500
@@ -36,6 +36,7 @@ export function ProjectCard({
   project: ProjectType;
   onDelete: () => void;
 }) {
+  const { token } = useUser();
   const handleDelete = () => {
     if (
       confirm(
@@ -49,16 +50,34 @@ export function ProjectCard({
   const handleDownload = async () => {
     try {
       toast.info("Preparing download...");
-      const response = await api.get(`/me/projects/${project.name}/download`);
-      const data = response.data;
+      const response = await fetch(
+        `/deepsite/api/me/projects/${project.name}/download`,
+        {
+          credentials: "include",
+          headers: {
+            Accept: "application/zip",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      const blob = new Blob([data.zip], { type: "application/zip" });
+      if (!response.ok) {
+        const error = await response
+          .json()
+          .catch(() => ({ error: "Download failed" }));
+        toast.error(error.error || "Failed to download project");
+        return;
+      }
+
+      const blob = await response.blob();
+
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
       link.download = `${project.name.replace(/\//g, "-")}.zip`;
       document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
 
       toast.success("Download started!");
