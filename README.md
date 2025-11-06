@@ -7,6 +7,7 @@ sdk: docker
 pinned: true
 app_port: 3000
 license: mit
+failure_strategy: rollback
 short_description: Generate any application by Vibe Coding
 models:
   - deepseek-ai/DeepSeek-V3-0324

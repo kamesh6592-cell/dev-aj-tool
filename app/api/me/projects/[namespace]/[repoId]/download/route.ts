@@ -82,9 +82,9 @@ export async function GET(
       }
     }
 
-    // Generate the ZIP file
-    const zipBuffer = await zip.generateAsync({ 
-      type: "nodebuffer",
+    // Generate the ZIP file as a Blob
+    const zipBlob = await zip.generateAsync({ 
+      type: "blob",
       compression: "DEFLATE",
       compressionOptions: {
         level: 6
@@ -96,11 +96,11 @@ export async function GET(
     const filename = `${projectName}.zip`;
 
     // Return the ZIP file
-    return new NextResponse(zipBuffer, {
+    return new NextResponse(zipBlob, {
       headers: {
         "Content-Type": "application/zip",
         "Content-Disposition": `attachment; filename="${filename}"`,
-        "Content-Length": zipBuffer.length.toString(),
+        "Content-Length": zipBlob.size.toString(),
       },
     });
   } catch (error: any) {
