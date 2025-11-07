@@ -107,9 +107,15 @@ export const MODELS = [
     label: "MiniMax M2",
     logo: MiniMaxLogo,
     companyName: "MiniMax",
-    isNew: true,
     top_k: 40,
     temperature: 1.0,
     top_p: 0.95,
+  }, {
+    value: "moonshotai/Kimi-K2-Thinking",
+    label: "Kimi K2 Thinking",
+    logo: KimiLogo,
+    companyName: "Kimi",
+    isNew: true,
+    temperature: 1.0,
   }
 ];
