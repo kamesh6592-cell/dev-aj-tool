@@ -219,15 +219,15 @@ export function Settings({
               <p className="text-neutral-300 text-sm mb-1">Provider Mode</p>
               <p className="text-neutral-400 text-xs mb-3 leading-relaxed">
                 Choose how we select providers:{" "}
-                <span className="text-white px-1.5 py-0.5 rounded bg-pink-500">
+                <span className="px-1.5 py-0.5 rounded bg-pink-500/10 text-pink-500">
                   Auto
                 </span>{" "}
                 (smart),{" "}
-                <span className="text-white px-1.5 py-0.5 rounded bg-yellow-500">
+                <span className="px-1.5 py-0.5 rounded bg-yellow-500/10 text-yellow-500">
                   Fastest
                 </span>{" "}
                 (speed), or{" "}
-                <span className="text-white px-1.5 py-0.5 rounded bg-green-500">
+                <span className="px-1.5 py-0.5 rounded bg-green-500/10 text-green-500">
                   Cheapest
                 </span>{" "}
                 (cost).
