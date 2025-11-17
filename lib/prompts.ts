@@ -334,7 +334,7 @@ class CustomSidebar extends HTMLElement {
           width: 250px;
           background: #f7fafc;
           padding: 1rem;
-          height: 100vh;
+          height: 100dvh;
           position: fixed;
           left: 0;
           top: 0;

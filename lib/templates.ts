@@ -1779,7 +1779,7 @@ const template4 = `
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" integrity="sha512-dPXYcDub/aeb08c63jRq/k6GaKccl256JQy/AnOq7CAnEZ9FzSL9wSbcZkMp4R26vBsMLFYH4kQ67/bbV8XaCQ==" crossorigin="anonymous" referrerpolicy="no-referrer">
     </head>
-    <body class="tw-flex tw-min-h-[100vh] tw-flex-col tw-bg-[#fff] tw-font-mono" style="">
+    <body class="tw-flex tw-min-h-[100dvh] tw-flex-col tw-bg-[#fff] tw-font-mono" style="">
         <header class="tw-absolute tw-top-0 tw-z-20 tw-flex tw-h-[60px] tw-w-full tw-bg-opacity-0 tw-px-[5%] max-lg:tw-mr-auto max-lg:tw-px-4 lg:tw-justify-around">
             <a class="tw-h-[50px] tw-p-[4px] tw-text-2xl tw-font-medium" href="">
                 Jamie
@@ -1803,8 +1803,8 @@ const template4 = `
             <button class="bi bi-list tw-absolute tw-right-3 tw-top-3 tw-z-50 tw-text-3xl tw-text-black lg:tw-hidden" onclick="toggleHeader()" aria-label="menu" id="collapse-btn"></button>
         </header>
 
-        <section class="tw-relative tw-flex tw-min-h-[100vh] tw-w-full tw-max-w-[100vw] tw-flex-col tw-overflow-hidden max-lg:tw-p-4 max-md:tw-mt-[50px]">
-            <div class="tw-flex tw-h-full tw-min-h-[100vh] tw-w-full tw-place-content-center tw-gap-6 tw-p-[5%] max-xl:tw-place-items-center max-lg:tw-flex-col">
+        <section class="tw-relative tw-flex tw-min-h-[100dvh] tw-w-full tw-max-w-[100dvw] tw-flex-col tw-overflow-hidden max-lg:tw-p-4 max-md:tw-mt-[50px]">
+            <div class="tw-flex tw-h-full tw-min-h-[100dvh] tw-w-full tw-place-content-center tw-gap-6 tw-p-[5%] max-xl:tw-place-items-center max-lg:tw-flex-col">
                 <div class="tw-flex tw-flex-col tw-place-content-center">
                     <div class="tw-flex tw-flex-wrap tw-text-7xl tw-font-semibold tw-uppercase tw-leading-[85px] max-lg:tw-text-4xl max-md:tw-leading-snug">
                         <span class="reveal-hero-text tw-bg-green-200 tw-p-1 tw-px-6" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0%); opacity: 1;">
@@ -1838,7 +1838,7 @@ const template4 = `
             </div>
         </section>
 
-        <section class="tw-relative tw-flex tw-min-h-[100vh] tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-items-center tw-overflow-hidden tw-p-6 tw-py-5">
+        <section class="tw-relative tw-flex tw-min-h-[100dvh] tw-w-full tw-max-w-[100dvw] tw-flex-col tw-place-items-center tw-overflow-hidden tw-p-6 tw-py-5">
             <h3 class="reveal-up tw-text-6xl tw-font-medium max-lg:tw-text-3xl" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0%); opacity: 1;">
                 Past works
             </h3>
@@ -1964,7 +1964,7 @@ const template4 = `
             </div>
         </section>
 
-        <section class="tw-relative tw-mt-10 tw-flex tw-min-h-[100vh] tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center lg:tw-p-6">
+        <section class="tw-relative tw-mt-10 tw-flex tw-min-h-[100dvh] tw-w-full tw-max-w-[100dvw] tw-flex-col tw-place-content-center tw-place-items-center lg:tw-p-6">
             <div class="tw-flex tw-h-full tw-w-full tw-justify-around tw-gap-8 tw-rounded-xl tw-bg-[#e7e6e685] tw-p-4 max-lg:tw-max-w-full max-lg:tw-flex-col">
                 <div class="reveal-up tw-flex tw-h-full tw-w-[50%] tw-place-content-center max-lg:tw-w-full lg:tw-sticky lg:tw-top-[20%]" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0%); opacity: 1;">
                     <h3 class="tw-text-center tw-text-6xl tw-font-medium max-lg:tw-text-3xl">
@@ -2065,7 +2065,7 @@ const template4 = `
             </div>
         </section>
 
-        <section class="tw-relative tw-flex tw-min-h-[80vh] tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-6" id="">
+        <section class="tw-relative tw-flex tw-min-h-[80dvh] tw-w-full tw-max-w-[100dvw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-6" id="">
             <div class="tw-mt-8 tw-flex tw-flex-col tw-place-items-center tw-gap-5">
                 <div class="reveal-up tw-mt-5 tw-flex tw-flex-col tw-gap-3 tw-text-center" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0%); opacity: 1;">
                     <h2 class="tw-text-4xl tw-font-semibold">

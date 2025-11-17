@@ -412,7 +412,7 @@ export function FileBrowser() {
 
                 <div
                   className="py-1 overflow-y-auto"
-                  style={{ height: "calc(100vh - 160px)" }}
+                  style={{ height: "calc(100dvh - 160px)" }}
                 >
                   {fileTree.children && renderFileTree(fileTree.children)}
                 </div>
