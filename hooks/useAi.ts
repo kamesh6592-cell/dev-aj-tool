@@ -66,6 +66,7 @@ export const useAi = (onScrollToBottom?: () => void) => {
   });
   const setSelectedElement = (newSelectedElement: HTMLElement | null) => {
     client.setQueryData(["ai.selectedElement"], newSelectedElement);
+    setIsEditableModeEnabled(false);
   };
 
   const { data: isEditableModeEnabled = false } = useQuery({

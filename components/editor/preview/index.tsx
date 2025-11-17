@@ -735,7 +735,7 @@ export const Preview = ({
         <div
           className="cursor-pointer absolute bg-sky-500/10 border-[2px] border-dashed border-sky-500 rounded-r-lg rounded-b-lg p-3 z-10 pointer-events-none"
           style={{
-            top: hoveredElement.rect.top,
+            top: hoveredElement.rect.top + 40,
             left: hoveredElement.rect.left,
             width: hoveredElement.rect.width,
             height: hoveredElement.rect.height,
@@ -796,11 +796,7 @@ export const Preview = ({
               }
             )}
             src={
-              !currentCommit &&
-              !isNew &&
-              !hasUnsavedChanges &&
-              project?.space_id &&
-              !project?.private
+              currentCommit && project?.space_id && !project?.private
                 ? `https://${project.space_id.replaceAll(
                     "/",
                     "-"
@@ -809,14 +805,15 @@ export const Preview = ({
             }
             srcDoc={
               currentCommit
-                ? commitPages.length > 0 && previewPageData?.html
-                  ? injectAssetsIntoHtml(previewPageData.html, commitPages)
-                  : defaultHTML
-                : isNew || hasUnsavedChanges || project?.private
+                ? undefined
+                : isNew ||
+                  hasUnsavedChanges ||
+                  project?.private ||
+                  !project?.space_id
                 ? isNew
                   ? throttledHtml || defaultHTML
                   : stableHtml
-                : undefined
+                : stableHtml || defaultHTML
             }
             onLoad={() => {
               if (

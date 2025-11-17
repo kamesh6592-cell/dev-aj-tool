@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { RepoDesignation, spaceInfo, uploadFiles } from "@huggingface/hub";
 
 import { isAuthenticated } from "@/lib/auth";
-import Project from "@/models/Project";
-import dbConnect from "@/lib/mongodb";
 
 export async function POST(
   req: NextRequest,
