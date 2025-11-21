@@ -126,9 +126,11 @@ export async function GET(
           });
         }
       }
-      if (fileInfo.type === "directory" && (["videos", "images", "audio"].includes(fileInfo.path) || fileInfo.path === "components")) {
+      if (fileInfo.type === "directory") {
         for await (const subFileInfo of listFiles({repo, accessToken: user.token as string, path: fileInfo.path})) {
-          if (subFileInfo.path.includes("components")) {
+          if (allowedFilesExtensions.includes(subFileInfo.path.split(".").pop() || "")) {
+            files.push(`https://huggingface.co/spaces/${namespace}/${repoId}/resolve/main/${subFileInfo.path}`);
+          } else {
             const blob = await downloadFile({ repo, accessToken: user.token as string, path: subFileInfo.path, raw: true });
             const html = await blob?.text();
             if (!html) {
@@ -138,8 +140,6 @@ export async function GET(
               path: subFileInfo.path,
               html,
             });
-          } else if (allowedFilesExtensions.includes(subFileInfo.path.split(".").pop() || "")) {
-            files.push(`https://huggingface.co/spaces/${namespace}/${repoId}/resolve/main/${subFileInfo.path}`);
           }
         }
       }
