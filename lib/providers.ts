@@ -81,7 +81,7 @@ export const MODELS = [
     companyName: "Qwen",
   },
   {
-    value: "moonshotai/Kimi-K2-Instruct",
+    value: "moonshotai/Kimi-K2-Instruct-0905",
     label: "Kimi K2 Instruct",
     providers: ["together", "novita", "groq"],
     autoProvider: "groq",
