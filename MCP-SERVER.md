@@ -1,8 +1,8 @@
-# DeepSite MCP Server
+# TOMO MCP Server
 
-DeepSite is now available as an MCP (Model Context Protocol) server, enabling AI assistants like Claude to create websites directly using natural language.
+TOMO is now available as an MCP (Model Context Protocol) server, enabling AI assistants like Claude to create applications directly using natural language.
 
-## Two Ways to Use DeepSite MCP
+## Two Ways to Use TOMO MCP
 
 **Quick Comparison:**
 
@@ -19,7 +19,7 @@ DeepSite is now available as an MCP (Model Context Protocol) server, enabling AI
 
 ### 🌐 Option 1: HTTP Server (Recommended)
 
-**No installation required!** Use DeepSite's hosted MCP server.
+**No installation required!** Use TOMO's hosted MCP server.
 
 #### Setup for Claude Desktop
 
@@ -56,7 +56,7 @@ Add to your Claude Desktop configuration file:
 
 #### Example Usage with Claude
 
-> "Create a portfolio website using DeepSite. Include a hero section, about section, and contact form."
+> "Create a portfolio website using TOMO. Include a hero section, about section, and contact form."
 
 Claude will automatically:
 1. Use the `create_project` tool
@@ -130,13 +130,13 @@ npm run build
 
 ### `create_project`
 
-Creates a new DeepSite project with HTML/CSS/JS files.
+Creates a new TOMO project with HTML/CSS/JS files.
 
 **Parameters:**
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `title` | string | No | Project title (defaults to "DeepSite Project") |
+| `title` | string | No | Project title (defaults to "TOMO Project") |
 | `pages` | array | Yes | Array of file objects with `path` and `html` |
 | `prompt` | string | No | Commit message/description |
 | `hf_token` | string | No* | Hugging Face API token (*optional if provided via Authorization header in config) |

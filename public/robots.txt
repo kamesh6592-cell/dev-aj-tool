@@ -11,7 +11,7 @@ Disallow: /assets/
 Allow: /api/public/
 
 # Sitemap location
-Sitemap: https://huggingface.co/deepsite/sitemap.xml
+Sitemap: https://github.com/kamesh6592-cell/dev-aj-tool/sitemap.xml
 
 # Crawl-delay for respectful crawling
 Crawl-delay: 1

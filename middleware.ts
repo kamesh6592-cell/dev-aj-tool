@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith('/_next/static')) {
     response.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
   }
-  response.headers.set('X-Canonical-URL', `https://huggingface.co/deepsite${request.nextUrl.pathname}`);
+  response.headers.set('X-Canonical-URL', `https://github.com/kamesh6592-cell/dev-aj-tool${request.nextUrl.pathname}`);
   
   return response;
 }

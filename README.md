@@ -1,14 +1,14 @@
 ---
-title: DeepSite v3
-emoji: 🐳
-colorFrom: blue
-colorTo: blue
+title: TOMO
+emoji: 🚀
+colorFrom: purple
+colorTo: pink
 sdk: docker
 pinned: true
 app_port: 3000
 license: mit
 failure_strategy: rollback
-short_description: Generate any application by Vibe Coding
+short_description: AI-powered development companion
 models:
   - deepseek-ai/DeepSeek-V3-0324
   - deepseek-ai/DeepSeek-R1-0528
@@ -23,6 +23,6 @@ models:
   - moonshotai/Kimi-K2-Thinking
 ---
 
-# DeepSite 🐳
+# TOMO 🚀
 
-DeepSite is a Vibe Coding Platform designed to make coding smarter and more efficient. Tailored for developers, data scientists, and AI engineers, it integrates generative AI into your coding projects to enhance creativity and productivity.
+TOMO is your AI-powered development companion designed to make coding smarter and more efficient. Tailored for developers, data scientists, and AI engineers, it integrates generative AI into your coding projects to enhance creativity and productivity.

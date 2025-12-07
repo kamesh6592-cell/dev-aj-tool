@@ -27,14 +27,14 @@ const ptSans = PT_Sans({
 
 export const metadata: Metadata = {
   ...generateSEO({
-    title: "DeepSite | Build with AI ✨",
+    title: "TOMO | AI Development Companion ✨",
     description:
-      "DeepSite is a web development tool that helps you build websites with AI, no code required. Let's deploy your website with DeepSite and enjoy the magic of AI.",
+      "TOMO is an AI-powered development companion that helps you build applications with AI assistance. Experience the magic of intelligent coding with TOMO.",
     path: "/",
   }),
   appleWebApp: {
     capable: true,
-    title: "DeepSite",
+    title: "TOMO",
     statusBarStyle: "black-translucent",
   },
   icons: {
@@ -90,7 +90,7 @@ export default async function RootLayout({
     hostname === "huggingface.co" || hostname.endsWith(".huggingface.co");
 
   if (!isHuggingFace && !isLocalDev) {
-    const pathname = headersList.get("x-invoke-path") || "/deepsite";
+    const pathname = headersList.get("x-invoke-path") || "/tomo";
     redirect(`https://huggingface.co${pathname}`);
   }
 
@@ -98,14 +98,14 @@ export default async function RootLayout({
 
   // Generate structured data
   const structuredData = generateStructuredData("WebApplication", {
-    name: "DeepSite",
-    description: "Build websites with AI, no code required",
-    url: "https://huggingface.co/deepsite",
+    name: "TOMO",
+    description: "AI-powered development companion",
+    url: "https://github.com/kamesh6592-cell/dev-aj-tool",
   });
 
   const organizationData = generateStructuredData("Organization", {
-    name: "DeepSite",
-    url: "https://huggingface.co/deepsite",
+    name: "TOMO Development",
+    url: "https://github.com/kamesh6592-cell/dev-aj-tool",
   });
 
   return (

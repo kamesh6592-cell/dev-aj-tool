@@ -2,21 +2,21 @@
   'use strict';
   
   // Check if badge already exists
-  if (document.getElementById('deepsite-badge-wrapper')) {
+  if (document.getElementById('tomo-badge-wrapper')) {
     return;
   }
 
-  // Don't show badge on huggingface.co/deepsite
+  // Don't show badge on github.com/kamesh6592-cell/dev-aj-tool
   const hostname = window.location.hostname;
   const pathname = window.location.pathname;
-  if (hostname === 'huggingface.co' && pathname.startsWith('/deepsite')) {
+  if (hostname === 'github.com' && pathname.startsWith('/kamesh6592-cell/dev-aj-tool')) {
     return;
   }
 
   // Inject keyframes for gradient rotation
   const style = document.createElement('style');
   style.textContent = `
-    @keyframes deepsite-spin {
+    @keyframes tomo-spin {
       0% {
         transform: translate(-50%, -50%) rotate(0deg);
       }
@@ -25,7 +25,7 @@
       }
     }
     
-    #deepsite-badge-wrapper i {
+    #tomo-badge-wrapper i {
       pointer-events: none;
       position: absolute;
       top: 0;
@@ -44,7 +44,7 @@
       border-radius: inherit;
     }
     
-    #deepsite-badge-wrapper i::before {
+    #tomo-badge-wrapper i::before {
       content: "";
       position: absolute;
       left: 50%;
@@ -60,41 +60,41 @@
       will-change: transform;
     }
     
-    #deepsite-badge-wrapper:hover i::before {
+    #tomo-badge-wrapper:hover i::before {
       opacity: 1;
-      animation: deepsite-spin 3s linear infinite;
+      animation: tomo-spin 3s linear infinite;
     }
   `;
   document.head.appendChild(style);
 
   // Create badge wrapper (like the button element)
   const badgeWrapper = document.createElement('div');
-  badgeWrapper.id = 'deepsite-badge-wrapper';
+  badgeWrapper.id = 'tomo-badge-wrapper';
   
   // Create inner badge (like the span element)
   const badgeInner = document.createElement('span');
-  badgeInner.id = 'deepsite-badge-inner';
+  badgeInner.id = 'tomo-badge-inner';
   
   // Create mask element (the i element)
   const borderMask = document.createElement('i');
   
   // Create link
   const link = document.createElement('a');
-  link.href = 'https://huggingface.co/deepsite';
+  link.href = 'https://github.com/kamesh6592-cell/dev-aj-tool';
   link.target = '_blank';
   link.rel = 'noopener noreferrer';
   
   // Create icon placeholder
   const icon = document.createElement('img');
-  icon.src = 'https://huggingface.co/deepsite/logo.svg';
-  icon.alt = 'DeepSite';
+  icon.src = 'https://github.com/kamesh6592-cell/dev-aj-tool/logo.svg';
+  icon.alt = 'TOMO';
   icon.style.marginRight = '6px';
   icon.style.width = '16px';
   icon.style.height = '16px';
   icon.style.filter = 'brightness(0) invert(1)';
   
   // Create text
-  const text = document.createTextNode('Made with DeepSite');
+  const text = document.createTextNode('Made with TOMO');
   
   // Apply styles to wrapper (like button element)
   Object.assign(badgeWrapper.style, {

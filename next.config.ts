@@ -2,13 +2,13 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  basePath: '/deepsite',
-  assetPrefix: '/deepsite',
+  basePath: '/tomo',
+  assetPrefix: '/tomo',
   async redirects() {
     return [
       {
         source: '/',
-        destination: '/deepsite',
+        destination: '/tomo',
         permanent: true,
         basePath: false,
       },
