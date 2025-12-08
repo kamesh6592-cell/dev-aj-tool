@@ -20,7 +20,7 @@ export const ContentModal = ({
       <section className="w-full border-b border-neutral-800/80 px-6 py-3.5 sticky top-0 bg-neutral-900 z-10">
         <div className="flex items-center justify-between gap-3">
           <p className="text-base font-semibold text-neutral-200">
-            Allow DeepSite to enhance your prompt
+            Allow TOMO to enhance your prompt
           </p>
           <Switch
             checked={enhancedSettings.isActive}
@@ -33,7 +33,7 @@ export const ContentModal = ({
           />
         </div>
         <p className="text-sm text-neutral-500 mt-2">
-          While using DeepSite enhanced prompt, you'll get better results. We'll
+          While using TOMO enhanced prompt, you'll get better results. We'll
           add more details and features to your request.
         </p>
         <div className="text-sm text-sky-500 mt-3 bg-gradient-to-r from-sky-400/15 to-purple-400/15 rounded-md px-3 py-2 border border-white/10">

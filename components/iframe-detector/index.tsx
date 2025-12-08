@@ -11,12 +11,9 @@ export default function IframeDetector() {
     const isAllowedDomain = (hostname: string) => {
       const host = hostname.toLowerCase();
       return (
-        host.endsWith(".huggingface.co") ||
-        host.endsWith(".hf.co") ||
-        host === "huggingface.co" ||
-        host === "hf.co" ||
-        host === "enzostvs-deepsite.hf.space" ||
-        host === "huggingface.co/deepsite"
+        host.endsWith(".vercel.app") ||
+        host === "dev-aj-tool.vercel.app" ||
+        host === "localhost"
       );
     };
 

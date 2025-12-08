@@ -34,11 +34,11 @@ export function Header({ isNew }: { isNew: boolean }) {
         <h1 className="text-neutral-900 dark:text-white text-lg lg:text-xl font-bold flex items-center justify-start">
           <Image
             src={Logo}
-            alt="DeepSite Logo"
+            alt="TOMO Logo"
             className="size-8 invert-100 dark:invert-0"
           />
           <p className="ml-2 flex items-center justify-start max-lg:hidden">
-            DeepSite
+            TOMO
             {user?.isPro ? (
               <ProTag className="ml-2 !text-[10px]" />
             ) : (
@@ -149,7 +149,7 @@ export function Header({ isNew }: { isNew: boolean }) {
             <UserMenu className="!pl-1 !pr-3 !py-1 !h-auto" />
           ) : (
             <Button size="sm" onClick={openLoginWindow}>
-              <span className="max-lg:hidden">Log In to DeepSite</span>
+              <span className="max-lg:hidden">Log In to TOMO</span>
               <span className="lg:hidden">Log In</span>
               <ArrowRight className="size-4" />
             </Button>

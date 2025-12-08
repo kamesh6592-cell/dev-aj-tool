@@ -39,7 +39,7 @@ export function MyProjects() {
           <div className="text-left">
             <h1 className="text-3xl font-bold text-white">
               <span className="capitalize">{user?.fullname}</span>&apos;s
-              DeepSite Projects
+              TOMO Projects
               {user?.isPro ? (
                 ""
               ) : (
@@ -50,12 +50,12 @@ export function MyProjects() {
             </h1>
             <p className="text-muted-foreground text-lg mt-1 max-w-xl">
               {user?.isPro ? (
-                "Create, manage, and explore your DeepSite projects."
+                "Create, manage, and explore your TOMO projects."
               ) : (
                 <span>
                   Upgrade to{" "}
                   <ProTag className="mx-1" onClick={() => openProModal([])} />{" "}
-                  to create unlimited projects with DeepSite.
+                  to create unlimited projects with TOMO.
                 </span>
               )}
             </p>

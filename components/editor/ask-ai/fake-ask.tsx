@@ -45,7 +45,7 @@ export const FakeAskAi = () => {
         <div className="w-full relative flex items-start justify-between pr-4 pt-4">
           <textarea
             className="w-full bg-transparent text-sm outline-none text-white placeholder:text-neutral-400 px-4 pb-4 resize-none"
-            placeholder="Ask DeepSite anything..."
+            placeholder="Ask TOMO anything..."
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={(e) => {

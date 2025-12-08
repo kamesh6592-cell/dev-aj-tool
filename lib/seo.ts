@@ -10,14 +10,14 @@ interface SEOParams {
 }
 
 export function generateSEO({
-  title = "DeepSite | Build with AI ✨",
-  description = "DeepSite is a web development tool that helps you build websites with AI, no code required. Let's deploy your website with DeepSite and enjoy the magic of AI.",
+  title = "TOMO | AI Development Companion ✨",
+  description = "TOMO is an AI-powered development tool that helps you build websites with AI. Create and deploy your projects with the power of AI assistance.",
   path = "",
   image = "/banner.png",
   noIndex = false,
   canonical,
 }: SEOParams = {}): Metadata {
-  const baseUrl = "https://huggingface.co/deepsite";
+  const baseUrl = "https://dev-aj-tool.vercel.app";
   const fullUrl = `${baseUrl}${path}`;
   const canonicalUrl = canonical || fullUrl;
   
@@ -54,13 +54,13 @@ export function generateSEO({
       title,
       description,
       url: canonicalUrl,
-      siteName: "DeepSite",
+      siteName: "TOMO",
       images: [
         {
           url: `${baseUrl}${image}`,
           width: 1200,
           height: 630,
-          alt: `${title} - DeepSite`,
+          alt: `${title} - TOMO`,
         },
       ],
       locale: "en_US",
@@ -71,7 +71,7 @@ export function generateSEO({
       title,
       description,
       images: [`${baseUrl}${image}`],
-      creator: "@deepsite",
+      creator: "@tomo",
     },
     other: {
       // Control how the page appears when shared
@@ -92,9 +92,9 @@ export function generateStructuredData(type: 'WebApplication' | 'Organization' |
     case 'WebApplication':
       return {
         ...baseStructuredData,
-        name: 'DeepSite',
-        description: 'Build websites with AI, no code required',
-        url: 'https://huggingface.co/deepsite',
+        name: 'TOMO',
+        description: 'AI-powered development companion',
+        url: 'https://dev-aj-tool.vercel.app',
         applicationCategory: 'DeveloperApplication',
         operatingSystem: 'Web',
         offers: {
@@ -104,8 +104,8 @@ export function generateStructuredData(type: 'WebApplication' | 'Organization' |
         },
         creator: {
           '@type': 'Organization',
-          name: 'DeepSite',
-          url: 'https://huggingface.co/deepsite',
+          name: 'TOMO',
+          url: 'https://dev-aj-tool.vercel.app',
         },
         ...data,
       };
@@ -113,9 +113,9 @@ export function generateStructuredData(type: 'WebApplication' | 'Organization' |
     case 'Organization':
       return {
         ...baseStructuredData,
-        name: 'DeepSite',
-        url: 'https://huggingface.co/deepsite',
-        logo: 'https://huggingface.co/deepsite/logo.svg',
+        name: 'TOMO',
+        url: 'https://dev-aj-tool.vercel.app',
+        logo: 'https://dev-aj-tool.vercel.app/logo.svg',
         description: 'AI-powered web development platform',
         sameAs: [
           // Add social media links here if available

@@ -121,10 +121,10 @@ export const AppEditor = ({
               readOnly: !!isAiWorking || !!currentCommit || globalEditorLoading,
               readOnlyMessage: {
                 value: globalEditorLoading
-                  ? "Wait for DeepSite loading your project..."
+                  ? "Wait for TOMO loading your project..."
                   : currentCommit
                   ? "You can't edit the code, as this is an old version of the project."
-                  : "Wait for DeepSite to finish working...",
+                  : "Wait for TOMO to finish working...",
                 isTrusted: true,
               },
               cursorBlinking: "smooth",

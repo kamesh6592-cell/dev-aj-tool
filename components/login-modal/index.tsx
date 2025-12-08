@@ -9,8 +9,8 @@ import { useEditor } from "@/hooks/useEditor";
 export const LoginModal = ({
   open,
   onClose,
-  title = "Log In to use DeepSite for free",
-  description = "Log In through your Hugging Face account to continue using DeepSite and increase your monthly free limit.",
+  title = "Log In to use TOMO for free",
+  description = "Log In to continue using TOMO and access all features.",
   prompt,
 }: {
   open: boolean;

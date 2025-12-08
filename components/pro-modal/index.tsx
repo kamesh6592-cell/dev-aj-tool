@@ -19,7 +19,8 @@ export const ProModal = ({
     if (pages && !isTheSameHtml(pages?.[0].html)) {
       setStorage(pages);
     }
-    window.open("https://huggingface.co/subscribe/pro?from=DeepSite", "_blank");
+    // Pro subscription - customize with your own subscription link
+    // window.open("your-subscription-url", "_blank");
     onClose(false);
   };
   return (
@@ -45,12 +46,12 @@ export const ProModal = ({
             Only $9 to enhance your possibilities
           </h2>
           <p className="text-neutral-500 text-base mt-2 max-w-sm">
-            It seems like you have reached the monthly free limit of DeepSite.
+            It seems like you have reached the monthly free limit of TOMO.
           </p>
           <hr className="bg-neutral-200 w-full max-w-[150px] my-6" />
           <p className="text-lg mt-3 text-neutral-900 font-semibold">
             Upgrade to a <ProTag className="mx-1" /> Account, and unlock your
-            DeepSite high quota access ⚡
+            TOMO high quota access ⚡
           </p>
           <ul className="mt-3 space-y-1 text-neutral-500">
             <li className="text-sm text-neutral-500 space-x-2 flex items-center justify-start gap-2 mb-3">

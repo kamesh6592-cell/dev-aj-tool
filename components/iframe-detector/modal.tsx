@@ -21,7 +21,7 @@ export default function IframeWarningModal({
 }: // onOpenChange,
 IframeWarningModalProps) {
   const handleVisitSite = () => {
-    window.open("https://huggingface.co/deepsite", "_blank");
+    window.open("https://dev-aj-tool.vercel.app", "_blank");
   };
 
   return (
@@ -33,7 +33,7 @@ IframeWarningModalProps) {
             <DialogTitle>Unauthorized Embedding</DialogTitle>
           </div>
           <DialogDescription className="text-left">
-            You&apos;re viewing DeepSite through an unauthorized iframe. For the
+            You&apos;re viewing TOMO through an unauthorized iframe. For the
             best experience and security, please visit the official website
             directly.
           </DialogDescription>
@@ -52,7 +52,7 @@ IframeWarningModalProps) {
         <DialogFooter className="flex-col sm:flex-row gap-2">
           <Button onClick={handleVisitSite} className="w-full sm:w-auto">
             <ExternalLink className="mr-2 h-4 w-4" />
-            Visit huggingface.co/deepsite
+            Visit TOMO directly
           </Button>
         </DialogFooter>
       </DialogContent>

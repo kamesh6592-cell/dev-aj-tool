@@ -8,14 +8,14 @@ export const NotLogged = () => {
     <section className="relative max-w-[86rem] mx-auto">
       <header className="container mx-auto pt-20 px-6 relative flex flex-col items-center justify-center text-center">
         <div className="rounded-full border border-sky-100/10 bg-gradient-to-r from-sky-500/15 to-sky-sky-500/5 text-sm text-sky-300 px-3 py-1 max-w-max mx-auto mb-2">
-          ✨ DeepSite v3 is out!
+          ✨ TOMO is here!
         </div>
         <h1 className="text-5xl lg:text-7xl font-semibold text-white font-mono max-w-4xl">
-          Welcome to DeepSite
+          Welcome to TOMO
         </h1>
         <p className="text-white/70 text-xl mt-3 mb-8">
           Code your website with AI in seconds. <br />
-          Access the most simple and powerful AI Vibe Code Editor to create your
+          Access the most simple and powerful AI Code Editor to create your
           next project.
         </p>
         <FakeAskAi />

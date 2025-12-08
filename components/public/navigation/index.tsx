@@ -93,12 +93,12 @@ export default function Navigation() {
           <Image
             src={Logo}
             className="w-9 mr-1"
-            alt="DeepSite Logo"
+            alt="TOMO Logo"
             width={64}
             height={64}
           />
           <p className="font-sans text-white text-xl font-bold max-lg:hidden">
-            DeepSite
+            TOMO
           </p>
           {user?.isPro && <ProTag className="ml-1" />}
         </Link>

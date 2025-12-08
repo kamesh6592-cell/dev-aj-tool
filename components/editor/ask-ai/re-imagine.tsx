@@ -52,7 +52,7 @@ export function ReImagine({
       setOpen(false);
       onRedesign(response.data.markdown, url.trim());
       setUrl("");
-      toast.success("DeepSite is redesigning your site! Let him cook... 🔥");
+      toast.success("TOMO is redesigning your site! Let it cook... 🔥");
     } else {
       toast.error(response?.data?.error || "Failed to redesign the site.");
     }
