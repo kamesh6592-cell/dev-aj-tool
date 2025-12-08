@@ -15,7 +15,6 @@ CREATE TABLE IF NOT EXISTS projects (
 
 -- Create index for faster queries
 CREATE INDEX IF NOT EXISTS idx_projects_user_id ON projects(user_id);
-CREATE INDEX IF NOT EXISTS idx_projects_slug ON projects(slug);
 
 -- Enable Row Level Security
 ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
