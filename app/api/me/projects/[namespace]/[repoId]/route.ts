@@ -59,6 +59,8 @@ export async function GET(
   try {
     const supabase = await createClient();
     
+    console.log('[GET Project] Looking for project:', { namespace, repoId, userId: user.id });
+    
     // Get project from Supabase
     const { data: project, error } = await supabase
       .from('projects')
@@ -67,7 +69,12 @@ export async function GET(
       .eq('user_id', user.id)
       .single();
 
+    if (error) {
+      console.error('[GET Project] Database error:', error);
+    }
+
     if (error || !project) {
+      console.log('[GET Project] Project not found');
       return NextResponse.json(
         {
           ok: false,
@@ -76,6 +83,8 @@ export async function GET(
         { status: 404 }
       );
     }
+    
+    console.log('[GET Project] Found project:', project.id);
 
     // Format pages from database
     const pages: Page[] = project.pages || [];

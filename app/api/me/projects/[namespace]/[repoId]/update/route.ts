@@ -56,6 +56,13 @@ export async function PUT(
       // Generate unique project ID
       const projectId = `${Date.now()}-${formattedTitle}`;
       
+      console.log('[UPDATE - New Project] Creating project:', {
+        projectId,
+        userId: user.id,
+        title,
+        pagesCount: pagesData.length
+      });
+      
       // Insert new project into Supabase
       const { data, error } = await supabase
         .from('projects')
@@ -76,7 +83,7 @@ export async function PUT(
         .single();
 
       if (error) {
-        console.error("Error creating project in Supabase:", error);
+        console.error("[UPDATE - New Project] Error creating project in Supabase:", error);
         return NextResponse.json(
           {
             ok: false,
@@ -85,6 +92,8 @@ export async function PUT(
           { status: 500 }
         );
       }
+
+      console.log('[UPDATE - New Project] Project created successfully:', data.id);
 
       namespace = user.id;
       repoId = projectId;

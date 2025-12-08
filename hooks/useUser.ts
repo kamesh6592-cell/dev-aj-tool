@@ -153,11 +153,19 @@ export const useUser = (initialData?: {
   };
 
   const logout = async () => {
-    removeToken();
-    removeCurrentRoute();
-    toast.success("Logout successful");
-    client.clear();
-    window.location.reload();
+    try {
+      const { createClient } = await import('@/lib/supabase/client');
+      const supabase = createClient();
+      await supabase.auth.signOut();
+      removeToken();
+      removeCurrentRoute();
+      client.clear();
+      toast.success("Logout successful");
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast.error("Failed to logout");
+    }
   };
 
   return {
