@@ -2,7 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  output: 'standalone',
   webpack(config, options) {
     const { isServer } = options;
     config.module.rules.push({
