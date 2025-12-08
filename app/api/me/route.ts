@@ -12,12 +12,12 @@ export async function GET() {
       return NextResponse.json({ user: null, errCode: 401, projects: [] }, { status: 401 });
     }
 
-    // Get user projects from your database
-    // For now, returning empty projects array - you'll need to implement project storage
-    const { data: projects, error: projectsError } = await supabase
+    // Get user projects from database
+    const { data: rawProjects, error: projectsError } = await supabase
       .from('projects')
       .select('*')
-      .eq('user_id', authUser.id);
+      .eq('user_id', authUser.id)
+      .order('updated_at', { ascending: false });
 
     const user = {
       id: authUser.id,
@@ -25,12 +25,28 @@ export async function GET() {
       name: authUser.user_metadata?.full_name || authUser.email?.split('@')[0] || 'User',
       fullname: authUser.user_metadata?.full_name || authUser.email?.split('@')[0] || 'User',
       avatarUrl: authUser.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${authUser.email}`,
-      isPro: false, // You can add pro status logic later
+      isPro: false,
     };
+
+    // Transform projects to match expected format
+    const projects = (rawProjects || []).map((project: any) => ({
+      id: project.id,
+      name: `${authUser.id}/${project.id}`,
+      author: authUser.id,
+      updatedAt: project.updated_at,
+      sdk: 'static',
+      private: false,
+      cardData: {
+        title: project.name,
+        colorFrom: 'blue',
+        colorTo: 'purple',
+        emoji: '🌐',
+      },
+    }));
 
     return NextResponse.json({ 
       user, 
-      projects: projects || [], 
+      projects, 
       errCode: null 
     }, { status: 200 });
   } catch (error) {

@@ -50,8 +50,10 @@ export function ProjectCard({
   const handleDownload = async () => {
     try {
       toast.info("Preparing download...");
+      // Extract project ID from space_id (format: "userId/projectId")
+      const projectId = project.name.includes('/') ? project.name.split('/')[1] : project.name;
       const response = await fetch(
-        `/api/me/projects/${project.name}/download`,
+        `/api/me/projects/${project.author}/${projectId}/download`,
         {
           credentials: "include",
           headers: {
@@ -74,7 +76,7 @@ export function ProjectCard({
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `${project.name.replace(/\//g, "-")}.zip`;
+      link.download = `${(project.cardData?.title || project.name).replace(/[^a-zA-Z0-9-_]/g, "-")}.zip`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -114,18 +116,10 @@ export function ProjectCard({
             <p className="text-4xl">{project.cardData?.emoji}</p>
           </div>
         ) : (
-          <div className="absolute inset-0 w-full h-full overflow-hidden">
-            <iframe
-              src={`https://${project.name.replaceAll(
-                "/",
-                "-"
-              )}.static.hf.space`}
-              className="w-[1200px] h-[675px] border-0 origin-top-left pointer-events-none"
-              style={{
-                transform: "scale(0.5)",
-                transformOrigin: "top left",
-              }}
-            />
+          <div
+            className={`absolute inset-0 w-full h-full flex items-center justify-center bg-gradient-to-br from-${project.cardData?.colorFrom || 'blue'}-600 to-${project.cardData?.colorTo || 'purple'}-600`}
+          >
+            <p className="text-4xl">{project.cardData?.emoji || '🌐'}</p>
           </div>
         )}
 
@@ -160,15 +154,6 @@ export function ProjectCard({
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56" align="start">
             <DropdownMenuGroup>
-              <a
-                href={`https://huggingface.co/spaces/${project.name}/settings`}
-                target="_blank"
-              >
-                <DropdownMenuItem>
-                  <Settings className="size-4 text-neutral-100" />
-                  Project Settings
-                </DropdownMenuItem>
-              </a>
               <DropdownMenuItem onClick={handleDownload}>
                 <Download className="size-4 text-neutral-100" />
                 Download as ZIP

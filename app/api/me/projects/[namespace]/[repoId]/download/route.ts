@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { RepoDesignation, listFiles, spaceInfo, downloadFile } from "@huggingface/hub";
 import JSZip from "jszip";
-
+import { createClient } from "@/lib/supabase/server";
 import { isAuthenticated } from "@/lib/auth";
 
 export async function GET(
@@ -18,62 +17,33 @@ export async function GET(
   const { namespace, repoId } = param;
 
   try {
-    const space = await spaceInfo({
-      name: `${namespace}/${repoId}`,
-      accessToken: user.token as string,
-      additionalFields: ["author"],
-    });
+    const supabase = await createClient();
+    
+    // Get project from Supabase
+    const { data: project, error } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('id', repoId)
+      .eq('user_id', user.id)
+      .single();
 
-    if (!space || space.sdk !== "static") {
+    if (error || !project) {
       return NextResponse.json(
         {
           ok: false,
-          error: "Space is not a static space",
+          error: "Project not found",
         },
         { status: 404 }
       );
     }
 
-    if (space.author !== user.name) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error: "Space does not belong to the authenticated user",
-        },
-        { status: 403 }
-      );
-    }
-
-    const repo: RepoDesignation = {
-      type: "space",
-      name: `${namespace}/${repoId}`,
-    };
-
     const zip = new JSZip();
 
-    for await (const fileInfo of listFiles({ 
-      repo, 
-      accessToken: user.token as string, 
-      recursive: true,
-    })) {
-      if (fileInfo.type === "directory" || fileInfo.path.startsWith(".")) {
-        continue;
-      }
-
-      try {
-        const blob = await downloadFile({ 
-          repo, 
-          accessToken: user.token as string, 
-          path: fileInfo.path, 
-          raw: true 
-        });
-
-        if (blob) {
-          const arrayBuffer = await blob.arrayBuffer();
-          zip.file(fileInfo.path, arrayBuffer);
-        }
-      } catch (error) {
-        console.error(`Error downloading file ${fileInfo.path}:`, error);
+    // Add all files from the project
+    const files = project.files || [];
+    for (const file of files) {
+      if (file.path && file.content) {
+        zip.file(file.path, file.content);
       }
     }
 
@@ -85,8 +55,8 @@ export async function GET(
       }
     });
 
-    const projectName = `${namespace}-${repoId}`.replace(/[^a-zA-Z0-9-_]/g, '_');
-    const filename = `${projectName}.zip`;
+    const projectName = project.slug || project.name || repoId;
+    const filename = `${projectName.replace(/[^a-zA-Z0-9-_]/g, '_')}.zip`;
 
     return new NextResponse(zipBlob, {
       headers: {
@@ -96,6 +66,7 @@ export async function GET(
       },
     });
   } catch (error: any) {
+    console.error("Error creating ZIP file:", error);
     return NextResponse.json(
       { ok: false, error: error.message || "Failed to create ZIP file" },
       { status: 500 }
