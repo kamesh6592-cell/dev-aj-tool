@@ -46,7 +46,7 @@ export const UserMenu = ({ className }: { className?: string }) => {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem
-            onClick={() => (window.location.href = "/deepsite/new")}
+            onClick={() => (window.location.href = "/new")}
           >
             <CirclePlus className="size-4 text-neutral-100" />
             New Project

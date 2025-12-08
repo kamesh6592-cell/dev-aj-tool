@@ -131,7 +131,7 @@ body {
 .background__noisy {
   @apply bg-blend-normal pointer-events-none opacity-90;
   background-size: 25ww auto;
-  background-image: url("/deepsite/background_noisy.webp");
+  background-image: url("/background_noisy.webp");
   @apply fixed w-screen h-screen -z-1 top-0 left-0;
 }
 

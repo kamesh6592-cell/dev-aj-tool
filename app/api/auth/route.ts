@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
   const redirect_uri =
     `${host.includes("localhost") ? "http://" : "https://"}` +
     url +
-    "/deepsite/auth/callback";
+    "/auth/callback";
   const request_auth = await fetch("https://huggingface.co/oauth/token", {
     method: "POST",
     headers: {

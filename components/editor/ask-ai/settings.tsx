@@ -310,7 +310,7 @@ export function Settings({
                         <BrainIcon className="size-4 mr-2" />
                       ) : (
                         <Image
-                          src={`/deepsite/providers/${id}.svg`}
+                          src={`/providers/${id}.svg`}
                           alt={id}
                           className="size-5 mr-2"
                           width={20}

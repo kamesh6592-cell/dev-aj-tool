@@ -51,7 +51,7 @@ export function ProjectCard({
     try {
       toast.info("Preparing download...");
       const response = await fetch(
-        `/deepsite/api/me/projects/${project.name}/download`,
+        `/api/me/projects/${project.name}/download`,
         {
           credentials: "include",
           headers: {

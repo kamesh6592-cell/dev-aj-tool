@@ -143,7 +143,7 @@ export const useAi = (onScrollToBottom?: () => void) => {
   const createNewProject = async (prompt: string, htmlPages: Page[], projectName: string | undefined, isLoggedIn?: boolean, userName?: string) => {
     if (isLoggedIn && userName) {
       try {
-        const uploadRequest = await fetch(`/deepsite/api/me/projects/${userName}/new/update`, {
+        const uploadRequest = await fetch(`/api/me/projects/${userName}/new/update`, {
           method: "PUT",
           body: JSON.stringify({
             pages: htmlPages,
@@ -190,7 +190,7 @@ export const useAi = (onScrollToBottom?: () => void) => {
     setController(abortController);
     
     try {
-      const request = await fetch("/deepsite/api/ask", {
+      const request = await fetch("/api/ask", {
         method: "POST",
         body: JSON.stringify({
           prompt,
@@ -345,7 +345,7 @@ export const useAi = (onScrollToBottom?: () => void) => {
         ? pages.filter(page => page.path === contextFile)
         : pages;
 
-      const request = await fetch("/deepsite/api/ask", {
+      const request = await fetch("/api/ask", {
         method: "PUT",
         body: JSON.stringify({
           prompt,
@@ -439,7 +439,7 @@ export const useAi = (onScrollToBottom?: () => void) => {
             }
 
             try {
-              const uploadRequest = await fetch(`/deepsite/api/me/projects/${namespace ?? 'unknown'}/${repoId ?? 'unknown'}/update`, {
+              const uploadRequest = await fetch(`/api/me/projects/${namespace ?? 'unknown'}/${repoId ?? 'unknown'}/update`, {
                 method: "PUT",
                 body: JSON.stringify({
                   pages: mergedPages,
