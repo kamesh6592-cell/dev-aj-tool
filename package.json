@@ -29,6 +29,7 @@
     "@tanstack/eslint-plugin-query": "^5.86.0",
     "@tanstack/react-query": "^5.86.0",
     "@tanstack/react-query-devtools": "^5.86.0",
+    "@vercel/blob": "^2.0.0",
     "axios": "^1.11.0",
     "class-variance-authority": "^0.7.1",
     "classnames": "^2.5.1",

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { RepoDesignation, spaceInfo, uploadFiles } from "@huggingface/hub";
-
+import { put } from "@vercel/blob";
+import { createClient } from "@/lib/supabase/server";
 import { isAuthenticated } from "@/lib/auth";
 
 export async function POST(
@@ -17,23 +17,20 @@ export async function POST(
     const param = await params;
     const { namespace, repoId } = param;
 
-    const space = await spaceInfo({
-      name: `${namespace}/${repoId}`,
-      accessToken: user.token as string,
-      additionalFields: ["author"],
-    });
-
-    if (!space || space.sdk !== "static") {
-      return NextResponse.json(
-        { ok: false, error: "Space is not a static space." },
-        { status: 404 }
-      );
-    }
+    const supabase = await createClient();
     
-    if (space.author !== user.name) {
+    // Verify project belongs to user
+    const { data: project, error: projectError } = await supabase
+      .from('projects')
+      .select('id')
+      .eq('id', repoId)
+      .eq('user_id', user.id)
+      .single();
+
+    if (projectError || !project) {
       return NextResponse.json(
-        { ok: false, error: "Space does not belong to the authenticated user." },
-        { status: 403 }
+        { ok: false, error: "Project not found" },
+        { status: 404 }
       );
     }
 
@@ -51,7 +48,8 @@ export async function POST(
       );
     }
 
-    const files: File[] = [];
+    const uploadedUrls: string[] = [];
+
     for (const file of mediaFiles) {
       if (!(file instanceof File)) {
         return NextResponse.json(
@@ -78,36 +76,28 @@ export async function POST(
         );
       }
 
-      // Create File object with appropriate folder prefix
-      let folderPrefix = 'images/';
+      // Determine folder prefix
+      let folderPrefix = 'images';
       if (isVideo) {
-        folderPrefix = 'videos/';
+        folderPrefix = 'videos';
       } else if (isAudio) {
-        folderPrefix = 'audio/';
+        folderPrefix = 'audio';
       }
       
-      const fileName = `${folderPrefix}${file.name}`;
-      const processedFile = new File([file], fileName, { type: file.type });
-      files.push(processedFile);
+      // Upload to Vercel Blob
+      const pathname = `${repoId}/${folderPrefix}/${file.name}`;
+      const blob = await put(pathname, file, {
+        access: 'public',
+        addRandomSuffix: false,
+      });
+
+      uploadedUrls.push(blob.url);
     }
-
-    // Upload files to HuggingFace space
-    const repo: RepoDesignation = {
-      type: "space",
-      name: `${namespace}/${repoId}`,
-    };
-
-    await uploadFiles({
-      repo,
-      files,
-      accessToken: user.token as string,
-      commitTitle: `Upload ${files.length} media file(s)`,
-    });
 
     return NextResponse.json({ 
       ok: true, 
-      message: `Successfully uploaded ${files.length} media file(s) to ${namespace}/${repoId}/`,
-      uploadedFiles: files.map((file) => `https://huggingface.co/spaces/${namespace}/${repoId}/resolve/main/${file.name}`),
+      message: `Successfully uploaded ${uploadedUrls.length} media file(s)`,
+      uploadedFiles: uploadedUrls,
     }, { status: 200 });
 
   } catch (error) {

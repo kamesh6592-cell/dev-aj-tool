@@ -36,6 +36,7 @@ export async function GET() {
       updatedAt: project.updated_at,
       sdk: 'static',
       private: false,
+      screenshot_url: project.screenshot_url,
       cardData: {
         title: project.name,
         colorFrom: 'blue',

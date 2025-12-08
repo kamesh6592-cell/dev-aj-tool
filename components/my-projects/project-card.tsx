@@ -103,7 +103,15 @@ export function ProjectCard({
         href={`/${project.name}`}
         className="relative bg-neutral-900 rounded-2xl overflow-hidden h-64 lg:h-44 w-full flex items-center justify-end flex-col px-3 border border-neutral-800"
       >
-        {project.private ? (
+        {(project as any).screenshot_url ? (
+          <div className="absolute inset-0 w-full h-full overflow-hidden">
+            <img
+              src={(project as any).screenshot_url}
+              alt={project.cardData?.title || project.name}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ) : project.private ? (
           <div
             className={`absolute inset-0 w-full h-full flex items-center justify-center bg-gradient-to-br from-${project.cardData?.colorFrom}-600 to-${project.cardData?.colorTo}-600`}
           >
