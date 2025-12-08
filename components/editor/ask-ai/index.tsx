@@ -271,12 +271,12 @@ export const AskAi = ({
             )}
             placeholder={
               selectedElement
-                ? `Ask DeepSite about ${selectedElement.tagName.toLowerCase()}...`
+                ? `Ask TOMO about ${selectedElement.tagName.toLowerCase()}...`
                 : redesignData
-                ? "Ask DeepSite anything about the redesign of your site..."
+                ? "Ask TOMO anything about the redesign of your site..."
                 : isFollowUp && (!isSameHtml || pages?.length > 1)
-                ? "Ask DeepSite for edits"
-                : "Ask DeepSite anything..."
+                ? "Ask TOMO for edits"
+                : "Ask TOMO anything..."
             }
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
