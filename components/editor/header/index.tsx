@@ -9,7 +9,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 
-import Logo from "@/assets/logo.svg";
+import Logo from "@/public/logo.png";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/hooks/useUser";
 import { ProTag } from "@/components/pro-modal";

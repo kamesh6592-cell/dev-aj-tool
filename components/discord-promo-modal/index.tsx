@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { DiscordIcon } from "@/components/icons/discord";
-import Logo from "@/assets/logo.svg";
+import Logo from "@/public/logo.png";
 
 const DISCORD_PROMO_KEY = "discord-promo-dismissed";
 const DISCORD_URL = "https://discord.gg/KpanwM3vXa";

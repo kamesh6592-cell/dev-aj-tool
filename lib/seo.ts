@@ -115,7 +115,7 @@ export function generateStructuredData(type: 'WebApplication' | 'Organization' |
         ...baseStructuredData,
         name: 'TOMO',
         url: 'https://dev-aj-tool.vercel.app',
-        logo: 'https://dev-aj-tool.vercel.app/logo.svg',
+        logo: 'https://dev-aj-tool.vercel.app/logo.png',
         description: 'AI-powered web development platform',
         sameAs: [
           // Add social media links here if available

@@ -4,6 +4,7 @@ export interface User {
   fullname: string;
   avatarUrl: string;
   name: string;
+  email?: string;
   isLocalUse?: boolean;
   isPro: boolean;
   id: string;

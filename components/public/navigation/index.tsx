@@ -8,7 +8,7 @@ import classNames from "classnames";
 import { ArrowRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import Logo from "@/assets/logo.svg";
+import Logo from "@/public/logo.png";
 import { useUser } from "@/hooks/useUser";
 import { UserMenu } from "@/components/user-menu";
 import { ProTag } from "@/components/pro-modal";

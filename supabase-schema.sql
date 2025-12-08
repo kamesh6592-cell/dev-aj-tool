@@ -22,6 +22,12 @@ CREATE INDEX IF NOT EXISTS idx_projects_namespace ON projects(namespace);
 -- Enable Row Level Security
 ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Users can view their own projects" ON projects;
+DROP POLICY IF EXISTS "Users can insert their own projects" ON projects;
+DROP POLICY IF EXISTS "Users can update their own projects" ON projects;
+DROP POLICY IF EXISTS "Users can delete their own projects" ON projects;
+
 -- Create policies
 CREATE POLICY "Users can view their own projects"
   ON projects FOR SELECT
