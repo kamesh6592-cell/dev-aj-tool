@@ -82,17 +82,7 @@ export default async function RootLayout({
   const host = headersList.get("host");
   const hostname = (forwardedHost || host || "").split(":")[0];
 
-  const isLocalDev =
-    hostname === "localhost" ||
-    hostname === "127.0.0.1" ||
-    hostname.startsWith("192.168.");
-  const isHuggingFace =
-    hostname === "huggingface.co" || hostname.endsWith(".huggingface.co");
-
-  if (!isHuggingFace && !isLocalDev) {
-    const pathname = headersList.get("x-invoke-path") || "/tomo";
-    redirect(`https://huggingface.co${pathname}`);
-  }
+  // Removed Hugging Face redirect - app now runs standalone on Vercel
 
   // const data = await getMe();
 
