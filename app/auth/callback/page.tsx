@@ -1,46 +1,34 @@
-"use client";
-import Link from "next/link";
-import { useUser } from "@/hooks/useUser";
-import { use, useState } from "react";
-import { useMount, useTimeoutFn } from "react-use";
+'use client'
 
-import { Button } from "@/components/ui/button";
-import { AnimatedBlobs } from "@/components/animated-blobs";
-import { useBroadcastChannel } from "@/lib/useBroadcastChannel";
-export default function AuthCallback({
-  searchParams,
-}: {
-  searchParams: Promise<{ code: string }>;
-}) {
-  const [showButton, setShowButton] = useState(false);
-  const [isPopupAuth, setIsPopupAuth] = useState(false);
-  const { code } = use(searchParams);
-  const { loginFromCode } = useUser();
-  const { postMessage } = useBroadcastChannel("auth", () => {});
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
+import { AnimatedBlobs } from "@/components/animated-blobs"
 
-  useMount(async () => {
-    if (code) {
-      const isPopup = window.opener || window.parent !== window;
-      setIsPopupAuth(isPopup);
+export default function AuthCallback() {
+  const router = useRouter()
+  const supabase = createClient()
 
-      if (isPopup) {
-        postMessage({
-          type: "user-oauth",
-          code: code,
-        });
-
-        setTimeout(() => {
-          if (window.opener) {
-            window.close();
-          }
-        }, 1000);
-      } else {
-        await loginFromCode(code);
+  useEffect(() => {
+    const handleCallback = async () => {
+      try {
+        const { error } = await supabase.auth.exchangeCodeForSession(
+          new URL(window.location.href).searchParams.get('code') || ''
+        )
+        
+        if (error) throw error
+        
+        // Redirect to home page after successful authentication
+        router.push('/')
+        router.refresh()
+      } catch (error) {
+        console.error('Error during auth callback:', error)
+        router.push('/auth?error=callback_failed')
       }
     }
-  });
 
-  useTimeoutFn(() => setShowButton(true), 7000);
+    handleCallback()
+  }, [router, supabase])
 
   return (
     <div className="h-screen flex flex-col justify-center items-center bg-neutral-950 z-1 relative">
@@ -60,38 +48,20 @@ export default function AuthCallback({
               </div>
             </div>
             <p className="text-xl font-semibold text-neutral-950">
-              {isPopupAuth
-                ? "Authentication Complete!"
-                : "Login In Progress..."}
+              Authentication Complete!
             </p>
             <p className="text-sm text-neutral-500 mt-1.5">
-              {isPopupAuth
-                ? "You can now close this tab and return to the previous page."
-                : "Wait a moment while we log you in with your code."}
+              Redirecting you to TOMO...
             </p>
           </header>
           <main className="space-y-4 p-6">
-            <div>
-              <p className="text-sm text-neutral-700 mb-4 max-w-xs">
-                If you are not redirected automatically in the next 5 seconds,
-                please click the button below
-              </p>
-              {showButton ? (
-                <Link href="/">
-                  <Button variant="black" className="relative">
-                    Go to Home
-                  </Button>
-                </Link>
-              ) : (
-                <p className="text-xs text-neutral-500">
-                  Please wait, we are logging you in...
-                </p>
-              )}
-            </div>
+            <p className="text-xs text-neutral-500">
+              Please wait while we complete your login...
+            </p>
           </main>
         </div>
         <AnimatedBlobs />
       </div>
     </div>
-  );
+  )
 }
