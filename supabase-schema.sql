@@ -1,23 +1,21 @@
 -- Create projects table
 CREATE TABLE IF NOT EXISTS projects (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  id TEXT PRIMARY KEY,
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
-  repo_id TEXT,
-  namespace TEXT,
+  slug TEXT NOT NULL,
   description TEXT,
-  sdk TEXT DEFAULT 'static',
-  tags TEXT[] DEFAULT ARRAY['tomo'],
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  files JSONB DEFAULT '{}',
+  files JSONB DEFAULT '[]',
   pages JSONB DEFAULT '[]',
-  UNIQUE(user_id, name)
+  last_commit JSONB DEFAULT '{}',
+  UNIQUE(user_id, slug)
 );
 
 -- Create index for faster queries
 CREATE INDEX IF NOT EXISTS idx_projects_user_id ON projects(user_id);
-CREATE INDEX IF NOT EXISTS idx_projects_namespace ON projects(namespace);
+CREATE INDEX IF NOT EXISTS idx_projects_slug ON projects(slug);
 
 -- Enable Row Level Security
 ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
