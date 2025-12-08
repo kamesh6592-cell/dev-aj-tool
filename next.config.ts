@@ -2,18 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  basePath: '/tomo',
-  assetPrefix: '/tomo',
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/tomo',
-        permanent: true,
-        basePath: false,
-      },
-    ];
-  },
+  output: 'standalone',
   webpack(config, options) {
     const { isServer } = options;
     config.module.rules.push({
@@ -25,7 +14,7 @@ const nextConfig: NextConfig = {
           options: {
             limit: config.inlineImageLimit,
             fallback: require.resolve("file-loader"),
-            publicPath: `${config.assetPrefix}/_next/static/images/`,
+            publicPath: `/_next/static/images/`,
             outputPath: `${isServer ? "../" : ""}static/images/`,
             name: "[name]-[hash].[ext]",
             esModule: config.esModule || false,
