@@ -145,16 +145,6 @@ export default function Navigation() {
           </div>
         </ul>
         <div className="flex items-center justify-end gap-3">
-          <Link href="https://discord.gg/KpanwM3vXa" target="_blank">
-            <Button
-              variant="bordered"
-              className="!border-indigo-500 !text-white !bg-indigo-500 transition-all duration-300"
-            >
-              <DiscordIcon className="size-4 mr-0.5" />
-              <span className="max-lg:hidden">Discord Community</span>
-              <span className="lg:hidden">Discord</span>
-            </Button>
-          </Link>
           {loading ? (
             <Button
               variant="ghostDarker"

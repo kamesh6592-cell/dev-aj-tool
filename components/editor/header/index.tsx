@@ -88,45 +88,8 @@ export function Header({ isNew }: { isNew: boolean }) {
               Help
             </Button>
           </Link>
-          <Link
-            href="https://discord.gg/KpanwM3vXa"
-            target="_blank"
-            className="max-lg:hidden"
-          >
-            <Button
-              size="xs"
-              variant="bordered"
-              className="!border-indigo-500 !text-white !bg-indigo-500"
-            >
-              <DiscordIcon className="size-3 mr-0.5" />
-              Discord Community
-            </Button>
-          </Link>
         </div>
         <div className="flex items-center gap-2">
-          {project?.space_id && (
-            <Link
-              href={
-                project?.private
-                  ? `https://huggingface.co/spaces/${project.space_id}`
-                  : `https://${project.space_id.replaceAll(
-                      "/",
-                      "-"
-                    )}.static.hf.space`
-              }
-              target="_blank"
-            >
-              <Button
-                size="xs"
-                variant="bordered"
-                className="flex items-center gap-1.5 justify-center bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 hover:from-emerald-500/30 hover:to-cyan-500/30 border-emerald-500/30 text-emerald-400 hover:text-emerald-300 backdrop-blur-sm shadow-lg hover:shadow-emerald-500/20 transition-all duration-300 max-lg:hidden font-medium"
-              >
-                <Eye className="size-3.5" />
-                See Live Preview
-                <Sparkles className="size-3" />
-              </Button>
-            </Link>
-          )}
 
           {project?.private && (
             <Tooltip>
