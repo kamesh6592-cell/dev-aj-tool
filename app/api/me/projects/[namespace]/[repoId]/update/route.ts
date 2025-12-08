@@ -1,15 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createRepo, RepoDesignation, uploadFiles } from "@huggingface/hub";
-
+import { createClient } from "@/lib/supabase/server";
 import { isAuthenticated } from "@/lib/auth";
 import { Page } from "@/types";
-import { COLORS } from "@/lib/utils";
-import { injectDeepSiteBadge, isIndexPage } from "@/lib/inject-badge";
-import { pagesToFiles } from "@/lib/format-ai-response";
 
 /**
  * UPDATE route - for updating existing projects or creating new ones after AI streaming
- * This route handles the HuggingFace upload after client-side AI response processing
+ * This route handles the Supabase database storage after client-side AI response processing
  */
 export async function PUT(
   req: NextRequest,
@@ -32,11 +28,24 @@ export async function PUT(
   }
 
   try {
-    let files: File[];
+    const supabase = await createClient();
     
+    // Serialize pages and files data
+    const pagesData = pages.map((page: Page) => ({
+      path: page.path,
+      html: page.html,
+      title: page.title || page.path,
+    }));
+
+    const filesData = pages.map((page: Page) => ({
+      path: page.path,
+      content: page.html,
+      size: page.html.length,
+    }));
+
     if (isNew) {
       // Creating a new project
-      const title = projectName || "DeepSite Project";
+      const title = projectName || "TOMO Project";
       const formattedTitle = title
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
@@ -45,88 +54,91 @@ export async function PUT(
         .join("-")
         .slice(0, 96);
 
-      const repo: RepoDesignation = {
-        type: "space",
-        name: `${user.name}/${formattedTitle}`,
-      };
+      // Generate unique project ID
+      const projectId = `${Date.now()}-${formattedTitle}`;
+      
+      // Insert new project into Supabase
+      const { data, error } = await supabase
+        .from('projects')
+        .insert({
+          id: projectId,
+          user_id: user.id,
+          name: title,
+          slug: formattedTitle,
+          description: `Project created with TOMO`,
+          pages: pagesData,
+          files: filesData,
+          last_commit: {
+            title: commitTitle,
+            timestamp: new Date().toISOString(),
+          },
+        })
+        .select()
+        .single();
 
-      try {
-        const { repoUrl } = await createRepo({
-          repo,
-          accessToken: user.token as string,
-        });
-        namespace = user.name;
-        repoId = repoUrl.split("/").slice(-2).join("/").split("/")[1];
-      } catch (createRepoError: any) {
+      if (error) {
+        console.error("Error creating project in Supabase:", error);
         return NextResponse.json(
           {
             ok: false,
-            error: `Failed to create repository: ${createRepoError.message || 'Unknown error'}`,
+            error: `Failed to create project: ${error.message}`,
           },
           { status: 500 }
         );
       }
 
-      // Prepare files with badge injection for new projects
-      files = [];
-      pages.forEach((page: Page) => {
-        let mimeType = "text/html";
-        if (page.path.endsWith(".css")) {
-          mimeType = "text/css";
-        } else if (page.path.endsWith(".js")) {
-          mimeType = "text/javascript";
-        } else if (page.path.endsWith(".json")) {
-          mimeType = "application/json";
+      namespace = user.id;
+      repoId = projectId;
+
+      return NextResponse.json({
+        ok: true,
+        pages: pagesData,
+        repoId: `${namespace}/${repoId}`,
+        projectId: projectId,
+        commit: {
+          title: commitTitle,
+          timestamp: new Date().toISOString(),
         }
-        const content = (mimeType === "text/html" && isIndexPage(page.path))
-          ? injectDeepSiteBadge(page.html)
-          : page.html;
-        const file = new File([content], page.path, { type: mimeType });
-        files.push(file);
       });
-
-      // Add README.md for new projects
-      const colorFrom = COLORS[Math.floor(Math.random() * COLORS.length)];
-      const colorTo = COLORS[Math.floor(Math.random() * COLORS.length)];
-      const README = `---
-title: ${title}
-colorFrom: ${colorFrom}
-colorTo: ${colorTo}
-emoji: 🐳
-sdk: static
-pinned: false
-tags:
-  - deepsite-v3
----
-
-# Welcome to your new DeepSite project!
-This project was created with [DeepSite](https://huggingface.co/deepsite).
-`;
-      files.push(new File([README], "README.md", { type: "text/markdown" }));
     } else {
-      // Updating existing project - no badge injection
-      files = pagesToFiles(pages);
-    }
+      // Updating existing project
+      const { data, error } = await supabase
+        .from('projects')
+        .update({
+          pages: pagesData,
+          files: filesData,
+          last_commit: {
+            title: commitTitle,
+            timestamp: new Date().toISOString(),
+          },
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', repoId)
+        .eq('user_id', user.id)
+        .select()
+        .single();
 
-    const response = await uploadFiles({
-      repo: {
-        type: "space",
-        name: `${namespace}/${repoId}`,
-      },
-      files,
-      commitTitle,
-      accessToken: user.token as string,
-    });
-
-    return NextResponse.json({
-      ok: true,
-      pages,
-      repoId: `${namespace}/${repoId}`,
-      commit: {
-        ...response.commit,
-        title: commitTitle,
+      if (error) {
+        console.error("Error updating project in Supabase:", error);
+        return NextResponse.json(
+          {
+            ok: false,
+            error: `Failed to update project: ${error.message}`,
+          },
+          { status: 500 }
+        );
       }
-    });
+
+      return NextResponse.json({
+        ok: true,
+        pages: pagesData,
+        repoId: `${namespace}/${repoId}`,
+        commit: {
+          title: commitTitle,
+          timestamp: new Date().toISOString(),
+        }
+      });
+    }
   } catch (error: any) {
     console.error("Error updating project:", error);
     return NextResponse.json(

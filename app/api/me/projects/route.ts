@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { RepoDesignation, createRepo, listCommits, spaceInfo, uploadFiles } from "@huggingface/hub";
-
+import { createClient } from "@/lib/supabase/server";
 import { isAuthenticated } from "@/lib/auth";
-import { Commit, Page } from "@/types";
-import { COLORS } from "@/lib/utils";
-import { injectDeepSiteBadge, isIndexPage } from "@/lib/inject-badge";
+import { Page } from "@/types";
 
 export async function POST(
   req: NextRequest,
@@ -16,7 +13,7 @@ export async function POST(
 
   const { title: titleFromRequest, pages, prompt } = await req.json();
 
-  const title = titleFromRequest ?? "DeepSite Project";
+  const title = titleFromRequest ?? "TOMO Project";
 
   const formattedTitle = title
   .toLowerCase()
@@ -26,93 +23,76 @@ export async function POST(
   .join("-")
   .slice(0, 96);
 
-  const repo: RepoDesignation = {
-    type: "space",
-    name: `${user.name}/${formattedTitle}`,
-  };
-  const colorFrom = COLORS[Math.floor(Math.random() * COLORS.length)];
-  const colorTo = COLORS[Math.floor(Math.random() * COLORS.length)];
-  const README = `---
-title: ${title}
-colorFrom: ${colorFrom}
-colorTo: ${colorTo}
-emoji: 🐳
-sdk: static
-pinned: false
-tags:
-  - deepsite-v3
----
-
-# Welcome to your new DeepSite project!
-This project was created with [DeepSite](https://huggingface.co/deepsite).
-`;
-
-  const files: File[] = [];
-  const readmeFile = new File([README], "README.md", { type: "text/markdown" });
-  files.push(readmeFile);
-  pages.forEach((page: Page) => {
-    // Determine MIME type based on file extension
-    let mimeType = "text/html";
-    if (page.path.endsWith(".css")) {
-      mimeType = "text/css";
-    } else if (page.path.endsWith(".js")) {
-      mimeType = "text/javascript";
-    } else if (page.path.endsWith(".json")) {
-      mimeType = "application/json";
-    }
-    // Inject the DeepSite badge script into index pages only (not components or other HTML files)
-    const content = (mimeType === "text/html" && isIndexPage(page.path)) 
-      ? injectDeepSiteBadge(page.html) 
-      : page.html;
-    const file = new File([content], page.path, { type: mimeType });
-    files.push(file);
-  });
-
   try {
-    const { repoUrl} = await createRepo({
-      repo,
-      accessToken: user.token as string,
-    });
-    const commitTitle = !prompt || prompt.trim() === "" ? "Redesign my website" : prompt;
-    await uploadFiles({
-      repo,
-      files,
-      accessToken: user.token as string,
-      commitTitle
-    });
+    const supabase = await createClient();
 
-    const path = repoUrl.split("/").slice(-2).join("/");
+    // Generate unique project ID
+    const projectId = `${Date.now()}-${formattedTitle}`;
+    
+    // Serialize pages and files data
+    const pagesData = pages.map((page: Page) => ({
+      path: page.path,
+      html: page.html,
+      title: page.title || page.path,
+    }));
 
-    const commits: Commit[] = [];
-    for await (const commit of listCommits({ repo, accessToken: user.token as string })) {
-      if (commit.title.includes("initial commit") || commit.title.includes("image(s)") || commit.title.includes("Promote version")) {
-        continue;
-      }
-      commits.push({
-        title: commit.title,
-        oid: commit.oid,
-        date: commit.date,
-      });
+    const filesData = pages.map((page: Page) => ({
+      path: page.path,
+      content: page.html,
+      size: page.html.length,
+    }));
+
+    const commitTitle = !prompt || prompt.trim() === "" ? "Create new website" : prompt;
+    
+    // Insert new project into Supabase
+    const { data, error } = await supabase
+      .from('projects')
+      .insert({
+        id: projectId,
+        user_id: user.id,
+        name: title,
+        slug: formattedTitle,
+        description: `Project created with TOMO`,
+        pages: pagesData,
+        files: filesData,
+        last_commit: {
+          title: commitTitle,
+          timestamp: new Date().toISOString(),
+        },
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error creating project in Supabase:", error);
+      return NextResponse.json(
+        { error: error.message, ok: false },
+        { status: 500 }
+      );
     }
 
-    const space = await spaceInfo({
-      name: repo.name,
-      accessToken: user.token as string,
-    });
+    const commits = [{
+      title: commitTitle,
+      oid: projectId,
+      date: new Date().toISOString(),
+    }];
 
     let newProject = {
-      files,
-      pages,
+      files: filesData,
+      pages: pagesData,
       commits,
       project: {
-        id: space.id,
-        space_id: space.name,
-        _updatedAt: space.updatedAt,
+        id: data.id,
+        space_id: `${user.id}/${projectId}`,
+        _updatedAt: data.updated_at,
       }
     }
     
+    const path = `${user.id}/${projectId}`;
+    
     return NextResponse.json({ space: newProject, path, ok: true }, { status: 201 });
   } catch (err: any) {
+    console.error("Error in POST /api/me/projects:", err);
     return NextResponse.json(
       { error: err.message, ok: false },
       { status: 500 }

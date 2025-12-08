@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { uploadFiles } from "@huggingface/hub";
-
+import { createClient } from "@/lib/supabase/server";
 import { isAuthenticated } from "@/lib/auth";
 import { Page } from "@/types";
 
@@ -25,38 +24,55 @@ export async function PUT(
   }
 
   try {
-    // Prepare files for upload
-    const files: File[] = [];
-    pages.forEach((page: Page) => {
-      // Determine MIME type based on file extension
-      let mimeType = "text/html";
-      if (page.path.endsWith(".css")) {
-        mimeType = "text/css";
-      } else if (page.path.endsWith(".js")) {
-        mimeType = "text/javascript";
-      } else if (page.path.endsWith(".json")) {
-        mimeType = "application/json";
-      }
-      const file = new File([page.html], page.path, { type: mimeType });
-      files.push(file);
-    });
+    const supabase = await createClient();
+    
+    // Serialize pages and files data
+    const pagesData = pages.map((page: Page) => ({
+      path: page.path,
+      html: page.html,
+      title: page.title || page.path,
+    }));
 
-    const response = await uploadFiles({
-      repo: {
-        type: "space",
-        name: `${namespace}/${repoId}`,
-      },
-      files,
-      commitTitle,
-      accessToken: user.token as string,
-    });
+    const filesData = pages.map((page: Page) => ({
+      path: page.path,
+      content: page.html,
+      size: page.html.length,
+    }));
+
+    // Update project in Supabase
+    const { data, error } = await supabase
+      .from('projects')
+      .update({
+        pages: pagesData,
+        files: filesData,
+        last_commit: {
+          title: commitTitle,
+          timestamp: new Date().toISOString(),
+        },
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', repoId)
+      .eq('user_id', user.id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error saving manual changes:", error);
+      return NextResponse.json(
+        {
+          ok: false,
+          error: error.message || "Failed to save changes",
+        },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({
       ok: true,
-      pages,
+      pages: pagesData,
       commit: {
-        ...response.commit,
         title: commitTitle,
+        timestamp: new Date().toISOString(),
       }
     });
   } catch (error: any) {

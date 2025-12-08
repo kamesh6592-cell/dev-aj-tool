@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { RepoDesignation, spaceInfo, listFiles, deleteRepo, listCommits, downloadFile } from "@huggingface/hub";
-
+import { createClient } from "@/lib/supabase/server";
 import { isAuthenticated } from "@/lib/auth";
 import { Commit, Page } from "@/types";
 
@@ -18,36 +17,22 @@ export async function DELETE(
   const { namespace, repoId } = param;
 
   try {
-    const space = await spaceInfo({
-      name: `${namespace}/${repoId}`,
-      accessToken: user.token as string,
-      additionalFields: ["author"],
-    });
+    const supabase = await createClient();
     
-    if (!space || space.sdk !== "static") {
+    // Delete project from Supabase
+    const { error } = await supabase
+      .from('projects')
+      .delete()
+      .eq('id', repoId)
+      .eq('user_id', user.id);
+    
+    if (error) {
+      console.error("Error deleting project:", error);
       return NextResponse.json(
-        { ok: false, error: "Space is not a static space." },
-        { status: 404 }
+        { ok: false, error: error.message },
+        { status: 500 }
       );
     }
-    
-    if (space.author !== user.name) {
-      return NextResponse.json(
-        { ok: false, error: "Space does not belong to the authenticated user." },
-        { status: 403 }
-      );
-    }
-    
-    const repo: RepoDesignation = {
-      type: "space",
-      name: `${namespace}/${repoId}`,
-    };
-    
-    await deleteRepo({
-      repo,
-      accessToken: user.token as string,
-    });
-
     
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (error: any) {
@@ -72,123 +57,56 @@ export async function GET(
   const { namespace, repoId } = param;
 
   try {
-    const space = await spaceInfo({
-      name: namespace + "/" + repoId,
-      accessToken: user.token as string,
-      additionalFields: ["author"],
-    });
+    const supabase = await createClient();
+    
+    // Get project from Supabase
+    const { data: project, error } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('id', repoId)
+      .eq('user_id', user.id)
+      .single();
 
-    if (!space || space.sdk !== "static") {
+    if (error || !project) {
       return NextResponse.json(
         {
           ok: false,
-          error: "Space is not a static space",
+          error: "Project not found",
         },
         { status: 404 }
       );
     }
-    if (space.author !== user.name) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error: "Space does not belong to the authenticated user",
-        },
-        { status: 403 }
-      );
-    }
 
-    const repo: RepoDesignation = {
-      type: "space",
-      name: `${namespace}/${repoId}`,
-    };
-
-    const htmlFiles: Page[] = [];
-    const files: string[] = [];
-
-    const allowedFilesExtensions = ["jpg", "jpeg", "png", "gif", "svg", "webp", "avif", "heic", "heif", "ico", "bmp", "tiff", "tif", "mp4", "webm", "ogg", "avi", "mov", "mp3", "wav", "ogg", "aac", "m4a"];
+    // Format pages from database
+    const pages: Page[] = project.pages || [];
     
-    for await (const fileInfo of listFiles({repo, accessToken: user.token as string})) {
-      if (fileInfo.path.endsWith(".html") || fileInfo.path.endsWith(".css") || fileInfo.path.endsWith(".js") || fileInfo.path.endsWith(".json")) {
-        const blob = await downloadFile({ repo, accessToken: user.token as string, path: fileInfo.path, raw: true });
-        const html = await blob?.text();
-        if (!html) {
-          continue;
-        }
-        if (fileInfo.path === "index.html") {
-          htmlFiles.unshift({
-            path: fileInfo.path,
-            html,
-          });
-        } else {
-          htmlFiles.push({
-            path: fileInfo.path,
-            html,
-          });
-        }
-      }
-      if (fileInfo.type === "directory") {
-        for await (const subFileInfo of listFiles({repo, accessToken: user.token as string, path: fileInfo.path})) {
-          if (allowedFilesExtensions.includes(subFileInfo.path.split(".").pop() || "")) {
-            files.push(`https://huggingface.co/spaces/${namespace}/${repoId}/resolve/main/${subFileInfo.path}`);
-          } else {
-            const blob = await downloadFile({ repo, accessToken: user.token as string, path: subFileInfo.path, raw: true });
-            const html = await blob?.text();
-            if (!html) {
-              continue;
-            }
-            htmlFiles.push({
-              path: subFileInfo.path,
-              html,
-            });
-          }
-        }
-      }
-    }
-    const commits: Commit[] = [];
-    for await (const commit of listCommits({ repo, accessToken: user.token as string })) {
-      if (commit.title.includes("initial commit") || commit.title.includes("image(s)") || commit.title.includes("Removed files from promoting")) {
-        continue;
-      }
-      commits.push({
-        title: commit.title,
-        oid: commit.oid,
-        date: commit.date,
-      });
-    }
+    // Format files from database
+    const files: string[] = (project.files || []).map((file: any) => file.path);
     
-    if (htmlFiles.length === 0) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error: "No HTML files found",
-        },
-        { status: 404 }
-      );
-    }
+    // Format commits
+    const commits: Commit[] = project.last_commit ? [{
+      title: project.last_commit.title,
+      oid: project.id,
+      date: project.last_commit.timestamp,
+    }] : [];
+    
     return NextResponse.json(
       {
         project: {
-          id: space.id,
-          space_id: space.name,
-          private: space.private,
-          _updatedAt: space.updatedAt,
+          id: project.id,
+          space_id: `${user.id}/${project.id}`,
+          private: false,
+          _updatedAt: project.updated_at,
         },
-        pages: htmlFiles,
+        pages,
         files,
         commits,
         ok: true,
       },
       { status: 200 }
     );
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.statusCode === 404) {
-      return NextResponse.json(
-        { error: "Space not found", ok: false },
-        { status: 404 }
-      );
-    }
+    console.error("Error getting project:", error);
     return NextResponse.json(
       { error: error.message, ok: false },
       { status: 500 }
