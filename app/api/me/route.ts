@@ -1,46 +1,44 @@
-import { listSpaces } from "@huggingface/hub";
-import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 
 export async function GET() {
-  const authHeaders = await headers();
-  const token = authHeaders.get("Authorization");
-  if (!token) {
-    return NextResponse.json({ user: null, errCode: 401 }, { status: 401 });
-  }
-
-  const userResponse = await fetch("https://huggingface.co/api/whoami-v2", {
-    headers: {
-      Authorization: `${token}`,
-    },
-  });
-
-  if (!userResponse.ok) {
-    return NextResponse.json(
-      { user: null, errCode: userResponse.status },
-      { status: userResponse.status }
-    );
-  }
-  const user = await userResponse.json();
-  const projects = [];
-  for await (const space of listSpaces({
-    accessToken: token.replace("Bearer ", "") as string,
-    additionalFields: ["author", "cardData"],
-    search: {
-      owner: user.name,
+  try {
+    const supabase = await createClient();
+    
+    // Get the current user from Supabase
+    const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !authUser) {
+      return NextResponse.json({ user: null, errCode: 401, projects: [] }, { status: 401 });
     }
-  })) {
-    if (
-      space.sdk === "static" &&
-      Array.isArray((space.cardData as { tags?: string[] })?.tags) &&
-      (
-        ((space.cardData as { tags?: string[] })?.tags?.includes("deepsite-v3")) ||
-        ((space.cardData as { tags?: string[] })?.tags?.includes("deepsite"))
-      )
-    ) {
-      projects.push(space);
-    }
-  }
 
-  return NextResponse.json({ user, projects, errCode: null }, { status: 200 });
+    // Get user projects from your database
+    // For now, returning empty projects array - you'll need to implement project storage
+    const { data: projects, error: projectsError } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('user_id', authUser.id);
+
+    const user = {
+      id: authUser.id,
+      email: authUser.email,
+      name: authUser.user_metadata?.full_name || authUser.email?.split('@')[0] || 'User',
+      fullname: authUser.user_metadata?.full_name || authUser.email?.split('@')[0] || 'User',
+      avatarUrl: authUser.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${authUser.email}`,
+      isPro: false, // You can add pro status logic later
+    };
+
+    return NextResponse.json({ 
+      user, 
+      projects: projects || [], 
+      errCode: null 
+    }, { status: 200 });
+  } catch (error) {
+    console.error('Error in /api/me:', error);
+    return NextResponse.json({ 
+      user: null, 
+      errCode: 500,
+      projects: [] 
+    }, { status: 500 });
+  }
 }
