@@ -34,7 +34,6 @@ export async function PUT(
     const pagesData = pages.map((page: Page) => ({
       path: page.path,
       html: page.html,
-      title: page.title || page.path,
     }));
 
     const filesData = pages.map((page: Page) => ({
