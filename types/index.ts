@@ -35,6 +35,7 @@ export interface Project {
 // expand SpaceEntry type
 export interface ProjectType extends SpaceEntry {
   cardData?: any;
+  author?: string;
 }
 
 export interface Page {
